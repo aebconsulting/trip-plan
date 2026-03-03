@@ -4,46 +4,100 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>12-Day Family Road Trip: FL → NC Mountains</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  /* ===================================================
+     MOUNTAIN TRAIL JOURNAL — Design System
+     Vintage national parks meets modern travel app
+     =================================================== */
+
   :root {
-    --bg: #f5f5f7;
-    --card-bg: #ffffff;
-    --text: #1d1d1f;
-    --text-secondary: #6e6e73;
-    --heading: #1d1d1f;
-    --accent: #2c5f8a;
-    --accent-light: #e8f0f8;
-    --link: #0066cc;
-    --border: #d2d2d7;
-    --border-light: #e8e8ed;
-    --table-header: #2c3e50;
-    --table-header-text: #ffffff;
-    --table-stripe: #f8f9fb;
-    --warning-bg: #fff8e1;
-    --warning-border: #f9a825;
-    --warning-text: #7a5600;
-    --success-bg: #e8f5e9;
-    --success-border: #66bb6a;
-    --info-bg: #e3f2fd;
-    --info-border: #42a5f5;
-    --day-badge: #2c5f8a;
-    --nav-bg: rgba(255,255,255,0.92);
-    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
-    --shadow-hover: 0 4px 12px rgba(0,0,0,0.1);
+    /* Earth-tone palette */
+    --cream: #F6F1E9;
+    --cream-dark: #EDE6D8;
+    --parchment: #FAF7F2;
+    --card-bg: #FFFFFF;
+    --text: #2C2416;
+    --text-muted: #7A7062;
+    --text-light: #A39A8C;
+
+    /* Forest greens */
+    --forest: #1B4332;
+    --forest-mid: #2D6A4F;
+    --forest-light: #40916C;
+    --sage: #E8F0E4;
+    --sage-deep: #D4E4CE;
+
+    /* Warm accents */
+    --terracotta: #C75C24;
+    --terracotta-light: #FFF0E6;
+    --amber: #E6A817;
+    --amber-light: #FFF8E1;
+    --clay: #A0522D;
+
+    /* Sky & water */
+    --slate: #4A6FA5;
+    --slate-light: #E8EEF6;
+    --sky: #87CEEB;
+
+    /* Functional */
+    --warning-bg: #FFF3E0;
+    --warning-border: #E65100;
+    --info-bg: #E8F0E4;
+    --info-border: #2D6A4F;
+    --border: #DDD5C8;
+    --border-light: #EAE4D9;
+
+    /* Shadows & effects */
+    --shadow-sm: 0 1px 3px rgba(44,36,22,0.06), 0 1px 2px rgba(44,36,22,0.04);
+    --shadow-md: 0 4px 16px rgba(44,36,22,0.08), 0 2px 6px rgba(44,36,22,0.04);
+    --shadow-lg: 0 12px 40px rgba(44,36,22,0.12), 0 4px 12px rgba(44,36,22,0.06);
+    --shadow-glow: 0 0 0 3px rgba(199,92,36,0.15);
+
+    /* Spacing */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 40px;
+    --space-2xl: 64px;
+
+    /* Radius */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    line-height: 1.65;
+    font-family: 'Outfit', system-ui, sans-serif;
+    font-weight: 400;
+    line-height: 1.7;
     color: var(--text);
-    background: var(--bg);
-    max-width: 860px;
+    background: var(--cream);
+    max-width: 900px;
     margin: 0 auto;
-    padding: 0 16px 40px;
+    padding: 0 var(--space-md) var(--space-xl);
     font-size: 15px;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Subtle paper texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
   }
 
   /* ===== NAVIGATION ===== */
@@ -51,11 +105,11 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    background: var(--nav-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(246,241,233,0.88);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
     padding: 10px 0;
-    border-bottom: 1px solid var(--border-light);
+    border-bottom: 2px solid var(--border);
     overflow-x: auto;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
@@ -65,217 +119,370 @@
 
   .nav-bar a {
     display: inline-block;
-    padding: 6px 14px;
+    padding: 5px 14px;
     margin: 2px 3px;
-    border-radius: 20px;
+    border-radius: 100px;
     background: var(--card-bg);
-    color: var(--accent);
-    font-size: 0.8em;
+    color: var(--forest);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78em;
     font-weight: 600;
     text-decoration: none;
-    border: 1px solid var(--border-light);
-    transition: all 0.2s;
+    border: 1.5px solid var(--border);
+    transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    letter-spacing: 0.02em;
   }
   .nav-bar a:hover, .nav-bar a:active {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
+    background: var(--forest);
+    color: var(--cream);
+    border-color: var(--forest);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
   }
   .nav-group { display: inline; }
   .nav-group::before {
     content: '';
     display: inline-block;
-    width: 1px;
-    height: 16px;
-    background: var(--border);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--terracotta);
     vertical-align: middle;
-    margin: 0 4px;
+    margin: 0 6px;
   }
   .nav-group:first-child::before { display: none; }
 
   /* ===== HERO HEADER ===== */
   .hero {
-    background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 50%, #3a7ca5 100%);
-    color: white;
-    padding: 32px 24px;
-    border-radius: 16px;
-    margin: 16px 0 20px;
+    position: relative;
+    background: linear-gradient(170deg, #1B4332 0%, #2D6A4F 40%, #40916C 70%, #52B788 100%);
+    color: var(--cream);
+    padding: 48px 32px 80px;
+    border-radius: var(--radius-xl);
+    margin: var(--space-md) 0 var(--space-lg);
     text-align: center;
-    box-shadow: 0 4px 20px rgba(44,95,138,0.3);
+    box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.1);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(230,168,23,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(135,206,235,0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-mountains {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    pointer-events: none;
   }
   .hero h1 {
-    font-size: 1.5em;
-    margin: 0 0 8px;
-    font-weight: 700;
+    font-family: 'Fraunces', 'Georgia', serif;
+    font-optical-sizing: auto;
+    font-size: 2em;
+    font-weight: 800;
+    margin: 0 0 12px;
     border: none;
-    color: white;
+    color: var(--cream);
+    text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    position: relative;
+    z-index: 1;
   }
   .hero .subtitle {
-    font-size: 0.9em;
-    opacity: 0.9;
-    line-height: 1.5;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.92em;
+    font-weight: 400;
+    opacity: 0.85;
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+    letter-spacing: 0.01em;
+  }
+  .hero .route-badge {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 6px 20px;
+    border: 1.5px solid rgba(255,255,255,0.35);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75em;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
   }
 
   /* ===== CARDS ===== */
   .card {
     background: var(--card-bg);
-    border-radius: 12px;
-    padding: 20px 24px;
-    margin: 16px 0;
-    box-shadow: var(--shadow);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin: var(--space-md) 0;
+    box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-light);
   }
 
   /* ===== COLLAPSIBLE SECTIONS ===== */
   details {
     background: var(--card-bg);
-    border-radius: 12px;
-    margin: 12px 0;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    margin: var(--space-md) 0;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
     overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
   }
   details[open] {
-    border-color: var(--accent);
+    border-color: var(--forest-light);
+    box-shadow: var(--shadow-md);
   }
   summary {
-    padding: 14px 20px;
+    padding: 16px 22px;
     cursor: pointer;
+    font-family: 'Fraunces', serif;
     font-weight: 600;
-    font-size: 1em;
-    color: var(--accent);
+    font-size: 1.05em;
+    color: var(--forest);
     list-style: none;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     user-select: none;
-    transition: background 0.2s;
+    transition: all 0.25s;
+    letter-spacing: -0.01em;
   }
   summary:hover {
-    background: var(--accent-light);
+    background: var(--sage);
+    color: var(--forest);
   }
   summary::before {
-    content: '▸';
-    font-size: 0.9em;
-    transition: transform 0.2s;
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-right: 2.5px solid var(--terracotta);
+    border-bottom: 2.5px solid var(--terracotta);
+    transform: rotate(-45deg);
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
     flex-shrink: 0;
+    margin-right: 2px;
   }
   details[open] > summary::before {
-    transform: rotate(90deg);
+    transform: rotate(45deg);
   }
   summary::-webkit-details-marker { display: none; }
   .details-content {
-    padding: 4px 20px 20px;
+    padding: 4px 22px 22px;
+    animation: slideDown 0.3s ease-out;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   /* ===== DAY SECTIONS ===== */
   .day-section {
     background: var(--card-bg);
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     padding: 0;
-    margin: 24px 0;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border-light);
+    margin: var(--space-lg) 0;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
     overflow: hidden;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
   }
-  .day-header {
-    background: linear-gradient(135deg, #2c5f8a, #3a7ca5);
-    color: white;
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .day-number {
-    background: rgba(255,255,255,0.2);
-    border-radius: 10px;
-    padding: 4px 14px;
-    font-size: 0.85em;
-    font-weight: 700;
-    white-space: nowrap;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.3);
-  }
-  .day-title {
-    font-size: 1.1em;
-    font-weight: 600;
-  }
-  .day-body {
-    padding: 20px 24px;
+  .day-section:hover {
+    box-shadow: var(--shadow-lg);
   }
 
-  /* Special day colors */
-  .day-spooky .day-header {
-    background: linear-gradient(135deg, #2d1b4e, #4a1a6b, #6b2fa0);
+  .day-header {
+    background: linear-gradient(135deg, var(--forest) 0%, var(--forest-mid) 100%);
+    color: var(--cream);
+    padding: 18px 26px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+    overflow: hidden;
   }
+  .day-header::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 120px;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05));
+    pointer-events: none;
+  }
+
+  .day-number {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(255,255,255,0.12);
+    border-radius: var(--radius-sm);
+    padding: 5px 14px;
+    font-size: 0.78em;
+    font-weight: 500;
+    white-space: nowrap;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
+  }
+  .day-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15em;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .day-body {
+    padding: 22px 26px;
+  }
+
+  /* Special day themes */
+  .day-spooky .day-header {
+    background: linear-gradient(135deg, #1A0A2E 0%, #2D1854 30%, #4A1A6B 60%, #6B2FA0 100%);
+  }
+  .day-spooky .day-header::after {
+    background: linear-gradient(90deg, transparent, rgba(107,47,160,0.15));
+  }
+  .day-spooky { border-color: #3D1F72; }
+
   .day-stpatrick .day-header {
-    background: linear-gradient(135deg, #1b5e20, #2e7d32, #388e3c);
+    background: linear-gradient(135deg, #0D5C36 0%, #1B8C5A 50%, #28A745 100%);
+  }
+  .day-stpatrick { border-color: #1B8C5A; }
+
+  .day-drive .day-header {
+    background: linear-gradient(135deg, #4A3728 0%, #6B5443 50%, #8B7355 100%);
+  }
+
+  /* Dotted route connector between days */
+  .day-section + .day-section {
+    margin-top: 8px;
+  }
+  .route-connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 0;
+    position: relative;
+  }
+  .route-connector::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    border-left: 3px dotted var(--terracotta);
+    opacity: 0.35;
+  }
+  .route-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 0 4px var(--cream);
   }
 
   /* ===== HEADINGS ===== */
   h1 {
-    font-size: 1.5em;
-    color: var(--heading);
+    font-family: 'Fraunces', 'Georgia', serif;
+    font-size: 1.6em;
+    font-weight: 700;
+    color: var(--forest);
     text-align: center;
-    margin: 24px 0 8px;
-    padding-bottom: 12px;
-    border-bottom: 3px solid var(--accent);
+    margin: var(--space-lg) 0 var(--space-sm);
+    padding-bottom: var(--space-md);
+    border-bottom: 3px solid var(--terracotta);
+    letter-spacing: -0.02em;
   }
   h2 {
-    font-size: 1.2em;
-    color: var(--accent);
-    margin: 24px 0 12px;
+    font-family: 'Fraunces', serif;
+    font-size: 1.25em;
+    font-weight: 600;
+    color: var(--forest);
+    margin: var(--space-lg) 0 var(--space-md);
     padding: 0;
     border: none;
+    letter-spacing: -0.01em;
   }
   h3 {
-    font-size: 1.05em;
-    color: var(--heading);
-    margin: 18px 0 8px;
+    font-family: 'Fraunces', serif;
+    font-size: 1.08em;
+    font-weight: 600;
+    color: var(--text);
+    margin: var(--space-md) 0 var(--space-sm);
+    letter-spacing: -0.01em;
   }
   h4 {
-    font-size: 0.95em;
-    color: var(--text-secondary);
-    font-weight: 600;
-    margin: 14px 0 6px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.82em;
+    color: var(--terracotta);
+    font-weight: 700;
+    margin: var(--space-md) 0 var(--space-xs);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.1em;
   }
-  p { margin: 8px 0; }
+  p { margin: var(--space-sm) 0; }
 
   a {
-    color: var(--link);
+    color: var(--forest-mid);
     text-decoration: none;
     word-break: break-word;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(45,106,79,0.25);
+    transition: all 0.2s;
   }
-  a:hover { text-decoration: underline; }
+  a:hover {
+    color: var(--terracotta);
+    border-bottom-color: var(--terracotta);
+    text-decoration: none;
+  }
 
   /* ===== LISTS ===== */
   ul, ol {
-    margin: 8px 0;
+    margin: var(--space-sm) 0;
     padding-left: 22px;
   }
   li {
-    margin: 5px 0;
-    line-height: 1.55;
+    margin: 6px 0;
+    line-height: 1.6;
+  }
+  li::marker {
+    color: var(--terracotta);
   }
   li strong {
-    color: var(--accent);
+    color: var(--forest);
+    font-weight: 600;
   }
 
   hr {
     border: none;
-    border-top: 1px solid var(--border-light);
-    margin: 20px 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: var(--space-lg) 0;
   }
 
   /* ===== TABLES ===== */
   .table-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    margin: 12px 0;
-    border-radius: 8px;
-    border: 1px solid var(--border-light);
+    margin: var(--space-md) 0;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
   }
   table {
     width: 100%;
@@ -284,109 +491,197 @@
     min-width: 400px;
   }
   th {
-    background: var(--table-header);
-    color: var(--table-header-text);
+    background: var(--forest);
+    color: var(--cream);
+    font-family: 'Outfit', sans-serif;
     font-weight: 600;
-    padding: 10px 12px;
+    padding: 12px 14px;
     text-align: left;
     white-space: nowrap;
-    font-size: 0.9em;
+    font-size: 0.82em;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.08em;
   }
   td {
-    padding: 8px 12px;
+    padding: 10px 14px;
     border-bottom: 1px solid var(--border-light);
     vertical-align: top;
   }
-  tr:nth-child(even) { background: var(--table-stripe); }
-  tr:hover { background: var(--accent-light); }
+  tr:nth-child(even) { background: var(--parchment); }
+  tr:hover { background: var(--sage); }
+  td:first-child { font-weight: 600; color: var(--text); }
 
   /* ===== ALERTS ===== */
   .alert {
-    border-radius: 10px;
-    padding: 14px 18px;
-    margin: 14px 0;
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin: var(--space-md) 0;
     font-size: 0.92em;
-    line-height: 1.5;
+    line-height: 1.6;
+    position: relative;
   }
   .alert-warning {
     background: var(--warning-bg);
     border-left: 4px solid var(--warning-border);
-    color: var(--warning-text);
+    color: #5D3A00;
+  }
+  .alert-warning::before {
+    content: '\26A0\FE0F';
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    font-size: 1.2em;
+    opacity: 0.4;
   }
   .alert-info {
     background: var(--info-bg);
     border-left: 4px solid var(--info-border);
-    color: #1565c0;
+    color: #1B4332;
+  }
+  .alert-info::before {
+    content: '\1F50D';
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    font-size: 1.1em;
+    opacity: 0.35;
   }
   .alert-success {
-    background: var(--success-bg);
-    border-left: 4px solid var(--success-border);
-    color: #2e7d32;
+    background: #F0F7EE;
+    border-left: 4px solid #52B788;
+    color: #1B4332;
   }
 
   /* ===== MAP LINK BUTTONS ===== */
   .map-link {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    background: var(--accent-light);
-    color: var(--accent);
-    padding: 8px 16px;
-    border-radius: 8px;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--forest) 0%, var(--forest-mid) 100%);
+    color: var(--cream) !important;
+    padding: 10px 20px;
+    border-radius: 100px;
+    font-family: 'Outfit', sans-serif;
     font-weight: 600;
-    font-size: 0.9em;
+    font-size: 0.85em;
     text-decoration: none;
-    border: 1px solid var(--accent);
-    margin: 8px 4px 8px 0;
-    transition: all 0.2s;
+    border: none !important;
+    margin: var(--space-sm) var(--space-xs) var(--space-sm) 0;
+    transition: all 0.3s cubic-bezier(.4,0,.2,1);
+    box-shadow: var(--shadow-sm);
+    letter-spacing: 0.02em;
   }
   .map-link:hover {
-    background: var(--accent);
-    color: white;
+    background: linear-gradient(135deg, var(--terracotta) 0%, #D97023 100%);
+    color: white !important;
     text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-bottom: none !important;
   }
 
   /* ===== BACK TO TOP ===== */
   .back-top {
     display: block;
     text-align: center;
-    padding: 16px;
-    margin: 24px 0;
-    font-size: 0.9em;
-    color: var(--link);
+    padding: var(--space-lg);
+    margin: var(--space-xl) 0 0;
+    font-size: 0.85em;
     font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .back-top a {
+    color: var(--text-muted);
+    border-bottom: none;
+    padding: 10px 28px;
+    border-radius: 100px;
+    border: 1.5px solid var(--border);
+    display: inline-block;
+    transition: all 0.25s;
+  }
+  .back-top a:hover {
+    background: var(--forest);
+    color: var(--cream);
+    border-color: var(--forest);
   }
 
-  /* ===== TRAIL TABLE HIGHLIGHT ===== */
-  td:first-child { font-weight: 600; }
+  /* ===== CHECKBOX ITEMS ===== */
+  li:has(> span:first-child) {
+    list-style: none;
+  }
+
+  /* ===== STRONG EMPHASIS ===== */
+  strong {
+    font-weight: 600;
+    color: var(--text);
+  }
+  em {
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  /* ===== SCROLL REVEAL ANIMATION ===== */
+  .day-section, details {
+    animation: fadeInUp 0.4s ease-out both;
+  }
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Stagger day sections */
+  .day-section:nth-child(1) { animation-delay: 0.05s; }
+  .day-section:nth-child(2) { animation-delay: 0.1s; }
+  .day-section:nth-child(3) { animation-delay: 0.15s; }
 
   /* ===== MOBILE ===== */
-  @media (max-width: 600px) {
-    body { padding: 0 10px 30px; font-size: 14px; }
-    .hero { padding: 24px 16px; margin: 10px 0 16px; border-radius: 12px; }
-    .hero h1 { font-size: 1.25em; }
-    .card { padding: 16px; border-radius: 10px; }
-    .day-header { padding: 12px 16px; gap: 10px; }
-    .day-body { padding: 16px; }
-    .day-number { font-size: 0.78em; padding: 3px 10px; }
+  @media (max-width: 640px) {
+    body { padding: 0 12px 30px; font-size: 14px; }
+    .hero {
+      padding: 32px 20px 64px;
+      margin: 10px 0 var(--space-md);
+      border-radius: var(--radius-lg);
+    }
+    .hero h1 { font-size: 1.5em; }
+    .hero .route-badge { font-size: 0.68em; padding: 5px 14px; }
+    .card { padding: var(--space-md); border-radius: var(--radius-md); }
+    .day-header { padding: 14px 18px; gap: 12px; }
+    .day-body { padding: 18px; }
+    .day-number { font-size: 0.7em; padding: 4px 10px; letter-spacing: 0.08em; }
     .day-title { font-size: 1em; }
-    details { border-radius: 10px; }
-    summary { padding: 12px 16px; font-size: 0.92em; }
-    .details-content { padding: 4px 16px 16px; }
-    th, td { padding: 6px 8px; font-size: 0.82em; }
-    .map-link { padding: 6px 12px; font-size: 0.85em; }
-    h2 { font-size: 1.1em; }
+    .day-section { border-radius: var(--radius-md); margin: var(--space-md) 0; }
+    details { border-radius: var(--radius-md); }
+    summary { padding: 14px 18px; font-size: 0.95em; }
+    .details-content { padding: 4px 18px 18px; }
+    th, td { padding: 8px 10px; font-size: 0.82em; }
+    .map-link { padding: 8px 16px; font-size: 0.82em; }
+    h2 { font-size: 1.12em; }
+    .alert { padding: 14px 16px; }
+  }
+
+  @media (max-width: 400px) {
+    .hero h1 { font-size: 1.3em; }
+    .nav-bar a { font-size: 0.72em; padding: 4px 10px; }
+    .day-header { flex-wrap: wrap; }
   }
 
   /* ===== PRINT ===== */
   @media print {
     body { max-width: 100%; background: white; }
+    body::before { display: none; }
     .nav-bar { display: none; }
+    .back-top { display: none; }
     .hero { box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    details { border: 1px solid #ccc; }
+    details { border: 1px solid #ccc; break-inside: avoid; }
     details[open] > summary { border-bottom: 1px solid #ccc; }
+    .day-section { break-inside: avoid; }
     .day-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }
 </style>
@@ -409,18 +704,24 @@
     <a href="#day-12">Day 12</a>
   </span>
   <span class="nav-group">
-    <a href="#scouting">🏔 Scouting</a>
-    <a href="#lodging">🏠 Lodging</a>
-    <a href="#booking">📋 Booking</a>
+    <a href="#scouting">Scouting</a>
+    <a href="#lodging">Lodging</a>
+    <a href="#booking">Checklist</a>
   </span>
 </div>
 
 <div class="hero">
-  <h1 style="border:none; margin:0; padding:0;">12-Day Family Road Trip</h1>
+  <svg class="hero-mountains" viewBox="0 0 1200 80" preserveAspectRatio="none" style="position:absolute;bottom:0;left:0;right:0;">
+    <path d="M0,80 L0,55 Q60,35 120,50 Q200,25 280,42 Q340,15 400,38 Q480,8 560,32 Q620,18 700,28 Q760,12 840,35 Q920,5 1000,30 Q1060,18 1120,38 Q1160,28 1200,45 L1200,80 Z" fill="rgba(0,0,0,0.12)"/>
+    <path d="M0,80 L0,62 Q80,45 160,55 Q240,38 320,52 Q400,30 480,48 Q560,35 640,45 Q720,28 800,42 Q880,32 960,50 Q1040,38 1120,52 L1200,58 L1200,80 Z" fill="rgba(0,0,0,0.08)"/>
+    <path d="M0,80 L0,68 Q100,58 200,65 Q300,55 400,62 Q500,52 600,60 Q700,55 800,65 Q900,58 1000,66 Q1100,60 1200,68 L1200,80 Z" fill="rgba(0,0,0,0.05)"/>
+  </svg>
+  <h1 style="border:none; margin:0; padding:0; color:var(--cream);">12-Day Family Road Trip</h1>
   <div class="subtitle">
-    Tamarac, FL → Savannah → NC Mountains → Home<br>
-    March 11–22, 2026 &nbsp;|&nbsp; Family of 3 &nbsp;|&nbsp; 2025 Toyota Crown
+    Tamarac, FL &rarr; Savannah &rarr; NC Mountains &rarr; Home<br>
+    March 11&ndash;22, 2026
   </div>
+  <span class="route-badge">~2,250 mi &bull; Family of 3 &bull; Toyota Crown</span>
 </div>
 
 <h1>12-Day Family Road Trip: Tamarac, FL → Savannah → NC Mountains → Home</h1>
@@ -781,7 +1082,7 @@ Dark &amp; Deviant Oddities, Raven &amp; Crone, L.O.F.T., and House of Black Cat
 | 3 | Lake Lure → Black Mountain | ~45 mi | ~1 hr 5 min | <strong>Must backtrack:</strong> US-64 W → Bat Cave → I-26 W → I-40 E → Exit 64 |
 | 4 | Black Mountain → Candler rental | ~24 mi | ~27 min | I-40 W |
 | | <strong>Day 6 Total</strong> | <strong>~117 mi</strong> | <strong>~2 hr 49 min</strong> | <em>Heaviest day-trip driving due to closures</em> |</p>
-<div class="alert alert-warning"><p><strong>⚠️ ROUTE WARNING — READ BEFORE DRIVING:</strong></p>
+<p><strong>⚠️ ROUTE WARNING — READ BEFORE DRIVING:</strong></p>
 <p>The ONLY open route into Chimney Rock is <strong>NC-9 through Lake Lure</strong> (from the south/east). All other routes are CLOSED to non-local traffic:</p>
 <ul>
 <li>US-74A from Asheville — <strong>CLOSED</strong></li>
@@ -1035,7 +1336,7 @@ Start early to beat crowds and have the falls to yourselves! Pick 2–3 based on
 | 5 | Wiseman&rsquo;s View → Blowing Rock (Mystery Hill) | ~30 mi | ~50 min | Kistler Memorial Hwy → US-221 N → BRP north |
 | | <strong>Day 10 Total (with Wiseman&rsquo;s View)</strong> | <strong>~82 mi</strong> | <strong>~2 hr 11 min</strong> | |
 | | <strong>Day 10 Total (skip Wiseman&rsquo;s View)</strong> | <strong>~72 mi</strong> | <strong>~1 hr 41 min</strong> | <em>Recommended for Toyota Crown</em> |</p>
-<div class="alert alert-warning"><p><strong>⚠️ Wiseman&rsquo;s View road warning:</strong> The last 4 miles to Wiseman&rsquo;s View are unpaved gravel/dirt with potholes. The Toyota Crown handles paved mountain roads well but the Vehicle Notes recommend avoiding rough unpaved roads. <strong>Consider skipping Wiseman&rsquo;s View</strong> or checking road conditions first — the views from Linville Falls overlooks are stunning on their own.</p>
+<p><strong>⚠️ Wiseman&rsquo;s View road warning:</strong> The last 4 miles to Wiseman&rsquo;s View are unpaved gravel/dirt with potholes. The Toyota Crown handles paved mountain roads well but the Vehicle Notes recommend avoiding rough unpaved roads. <strong>Consider skipping Wiseman&rsquo;s View</strong> or checking road conditions first — the views from Linville Falls overlooks are stunning on their own.</p>
 <p><strong>HIKE OPTIONS:</strong></p>
 <table>
 <thead>
@@ -2167,13 +2468,15 @@ This is a direct tension with your goal of land near a stream. Here&rsquo;s how 
 <li>Save real estate listings to browse in the evenings</li>
 </ul>
 
-<p class="back-top"><a href="#top">↑ Back to Top</a></p>
+<div class="back-top"><a href="#top">&uarr; Back to Top</a></div>
 
 <script>
-// Post-process: Wrap overview sections in collapsible cards
+// ============================================
+// Post-process: Transform flat HTML into styled components
+// ============================================
 document.addEventListener('DOMContentLoaded', function() {
 
-  // Helper: wrap content between two elements in a container
+  // Helper: wrap content between two elements in a collapsible container
   function wrapSection(heading, className, emoji, collapsed) {
     if (!heading) return;
     const details = document.createElement('details');
@@ -2186,14 +2489,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const content = document.createElement('div');
     content.className = 'details-content';
 
-    // Collect all siblings until next h2 or hr
     let next = heading.nextElementSibling;
     const collected = [];
     while (next && next.tagName !== 'H2' && !(next.tagName === 'HR')) {
       collected.push(next);
       next = next.nextElementSibling;
     }
-    // Also skip the hr after
     if (next && next.tagName === 'HR') {
       collected.push(next);
       next = next.nextElementSibling;
@@ -2209,18 +2510,18 @@ document.addEventListener('DOMContentLoaded', function() {
   // Find and wrap overview sections
   const h2s = document.querySelectorAll('h2');
   const sectionConfig = {
-    'Context': { emoji: '📍', collapsed: true },
-    'Asheville Days Flexibility Guide': { emoji: '🔀', collapsed: true },
-    'Costco Locations': { emoji: '🛒', collapsed: true },
-    'Vehicle Notes': { emoji: '🚗', collapsed: true },
-    'Horror, Oddities': { emoji: '🦇', collapsed: true },
-    'Events Calendar': { emoji: '📅', collapsed: true },
-    'Road Condition Alerts': { emoji: '🚧', collapsed: false },
-    'Kid-Friendly Backup': { emoji: '🎮', collapsed: true },
-    'Driving Summary': { emoji: '🗺️', collapsed: true },
-    'Packing List': { emoji: '🧳', collapsed: true },
-    'Neighborhood Drive': { emoji: '🏘️', collapsed: true },
-    'What to Evaluate': { emoji: '📊', collapsed: true },
+    'Context': { emoji: '\uD83D\uDCCD', collapsed: true },
+    'Asheville Days Flexibility Guide': { emoji: '\uD83D\uDD00', collapsed: true },
+    'Costco Locations': { emoji: '\uD83D\uDED2', collapsed: true },
+    'Vehicle Notes': { emoji: '\uD83D\uDE97', collapsed: true },
+    'Horror, Oddities': { emoji: '\uD83E\uDD87', collapsed: true },
+    'Events Calendar': { emoji: '\uD83D\uDCC5', collapsed: true },
+    'Road Condition Alerts': { emoji: '\uD83D\uDEA7', collapsed: false },
+    'Kid-Friendly Backup': { emoji: '\uD83C\uDFAE', collapsed: true },
+    'Driving Summary': { emoji: '\uD83D\uDDFA\uFE0F', collapsed: true },
+    'Packing List': { emoji: '\uD83E\uDDF3', collapsed: true },
+    'Neighborhood Drive': { emoji: '\uD83C\uDFD8\uFE0F', collapsed: true },
+    'What to Evaluate': { emoji: '\uD83D\uDCCA', collapsed: true },
   };
 
   h2s.forEach(h2 => {
@@ -2246,22 +2547,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Special styling
     if (h2.textContent.includes('Friday the 13th')) card.classList.add('day-spooky');
     if (h2.textContent.includes('St. Patrick')) card.classList.add('day-stpatrick');
+    if (h2.textContent.includes('Drive to Savannah') || h2.textContent.includes('Savannah →') || h2.textContent.includes('→ Home')) card.classList.add('day-drive');
 
     const header = document.createElement('div');
     header.className = 'day-header';
-    header.innerHTML = `<span class="day-number">DAY ${dayNum}</span><span class="day-title">${h2.textContent.replace(/Day\s+\d+\s*[—–-]\s*/, '').replace(/^[^:]+:\s*/, '')}</span>`;
+
+    // Clean up the title
+    let titleText = h2.textContent
+      .replace(/Day\s+\d+\s*[\u2014\u2013-]\s*/, '')
+      .replace(/^[^:]+:\s*/, '');
+
+    header.innerHTML = '<span class="day-number">DAY ' + dayNum + '</span><span class="day-title">' + titleText + '</span>';
 
     const body = document.createElement('div');
     body.className = 'day-body';
 
-    // Collect content
+    // Collect content until next day section or major section
     let next = h2.nextElementSibling;
     const collected = [];
     while (next && !(next.tagName === 'H2' || (next.tagName === 'DIV' && next.classList.contains('day-section')) || next.tagName === 'HR' || next.tagName === 'DETAILS')) {
       collected.push(next);
       next = next.nextElementSibling;
     }
-    // Skip trailing hr
     if (next && next.tagName === 'HR') {
       next.remove();
     }
@@ -2273,20 +2580,20 @@ document.addEventListener('DOMContentLoaded', function() {
     h2.remove();
   });
 
-  // Style Google Map links as buttons
+  // Style Google Map links as pill buttons
   document.querySelectorAll('a').forEach(a => {
     if (a.href && (a.href.includes('google.com/maps') || a.textContent.includes('Google Map') || a.textContent.includes('Map') || a.textContent.includes('Option 1') || a.textContent.includes('Option 2'))) {
       if (a.textContent.length < 60) {
         a.classList.add('map-link');
-        a.textContent = '📍 ' + a.textContent;
+        a.textContent = '\uD83D\uDCCD ' + a.textContent;
       }
     }
   });
 
-  // Wrap warning paragraphs
+  // Wrap warning paragraphs in styled alert boxes
   document.querySelectorAll('p').forEach(p => {
     const text = p.textContent;
-    if (text.includes('⚠️') || text.includes('WARNING') || text.includes('ROUTE WARNING') || text.includes('GPS WARNING')) {
+    if (text.includes('\u26A0') || text.includes('WARNING') || text.includes('ROUTE WARNING') || text.includes('GPS WARNING')) {
       if (!p.closest('.alert')) {
         const alert = document.createElement('div');
         alert.className = 'alert alert-warning';
@@ -2314,11 +2621,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Remove the raw h1 and subtitle that markdown generated (we have the hero now)
+  // Remove the raw h1 + subtitle that markdown generated (hero header replaces them)
   const firstH1 = document.querySelector('body > h1');
   if (firstH1) {
     let next = firstH1.nextElementSibling;
-    // Remove the subtitle p and following hr
     while (next && (next.tagName === 'P' || next.tagName === 'HR')) {
       const toRemove = next;
       next = next.nextElementSibling;
@@ -2330,6 +2636,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     firstH1.remove();
   }
+
+  // Add route connector dots between day sections
+  const daySections = document.querySelectorAll('.day-section');
+  daySections.forEach((section, i) => {
+    if (i > 0) {
+      const connector = document.createElement('div');
+      connector.className = 'route-connector';
+      connector.innerHTML = '<div class="route-dot"></div>';
+      section.parentNode.insertBefore(connector, section);
+    }
+  });
 
 });
 </script>
