@@ -3730,7 +3730,7 @@ function buildPanel(dayInfo, forecast) {
 
   let html = `<div style="font-size:1.1em;font-weight:700;color:#1B4332;margin-bottom:8px;">🌤️ Weather &amp; Conditions — ${location}</div>`;
 
-  if (\!day && \!night) {
+  if (!day && !night) {
     html += `<div style="color:#666;font-style:italic;">Forecast available ~7 days before ${dateStr}</div>`;
     panel.innerHTML = html;
     return panel;
@@ -3756,9 +3756,9 @@ function buildPanel(dayInfo, forecast) {
   html += `<div style="color:#555;">${forecastText}</div>`;
   html += `</div></div>`;
 
-  if (precipDay \!== null || precipNight \!== null) {
-    const pDay = precipDay \!== null ? precipDay : "--";
-    const pNight = precipNight \!== null ? precipNight : "--";
+  if (precipDay !== null || precipNight !== null) {
+    const pDay = precipDay !== null ? precipDay : "--";
+    const pNight = precipNight !== null ? precipNight : "--";
     html += `<div style="font-size:0.9em;color:#555;margin-bottom:4px;">💧 Precip: ${pDay}% day / ${pNight}% night</div>`;
   }
 
