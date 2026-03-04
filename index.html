@@ -152,6 +152,77 @@
   }
   .nav-group:first-child::before { display: none; }
 
+  /* Dropdown menu */
+  .menu-btn {
+    display: inline-block;
+    padding: 5px 14px;
+    margin: 2px 3px;
+    border-radius: 100px;
+    background: var(--forest);
+    color: var(--cream);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78em;
+    font-weight: 600;
+    border: 1.5px solid var(--forest);
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: all 0.25s cubic-bezier(.4,0,.2,1);
+  }
+  .menu-btn:hover {
+    background: var(--forest-mid);
+    border-color: var(--forest-mid);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+  .menu-panel {
+    position: fixed;
+    top: 52px;
+    right: 12px;
+    min-width: 280px;
+    max-width: 320px;
+    max-height: 70vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.08);
+    z-index: 9999;
+    border: 1px solid var(--border);
+    padding: 6px 0;
+    animation: menuFadeIn 0.2s ease-out;
+  }
+  @keyframes menuFadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .menu-panel-header {
+    padding: 10px 16px 8px 16px;
+    font-family: 'Fraunces', serif;
+    font-size: 0.9em;
+    font-weight: 700;
+    color: var(--forest);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+  .menu-panel a {
+    display: block;
+    padding: 8px 16px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.82em;
+    color: var(--text);
+    text-decoration: none;
+    transition: background 0.15s;
+    border-radius: 0;
+    border: none;
+    margin: 0;
+    background: transparent;
+  }
+  .menu-panel a:hover {
+    background: #f0fdf4;
+    color: var(--forest);
+    transform: none;
+    box-shadow: none;
+  }
+
   /* ===== HERO HEADER ===== */
   .hero {
     position: relative;
@@ -906,9 +977,7 @@
     <a href="#day-12">Day 12</a>
   </span>
   <span class="nav-group">
-    <a href="#scouting">Scouting</a>
-    <a href="#lodging">Lodging</a>
-    <a href="#booking">Checklist</a>
+    <button class="menu-btn" id="mainMenuBtn" aria-label="Menu">☰ Menu</button>
   </span>
 </div>
 
@@ -3702,6 +3771,103 @@ const DAY_ROAD_LINKS = {
 const BRP_DAYS = [6, 7, 8, 10];
 
 // ============================================
+// LIVE ROAD CONDITIONS API
+// ============================================
+
+// Counties along the route, mapped to trip days
+const ROUTE_COUNTIES = {
+  1: [],  // FL/GA - not NC
+  2: [],  // Driving through SC
+  3: [11],  // Buncombe (Asheville)
+  4: [45],  // Henderson (Hendersonville)
+  5: [11],  // Buncombe (Asheville/Biltmore)
+  6: [45, 80],  // Henderson, Rutherford (Chimney Rock)
+  7: [11, 88],  // Buncombe, Transylvania (Pisgah)
+  8: [88],  // Transylvania (Brevard/DuPont)
+  9: [95],  // Watauga (Boone)
+  10: [3, 95],  // Avery, Watauga (Grandfather Mtn)
+  11: [],  // Driving south
+  12: []   // Driving south
+};
+
+// Key roads to filter for
+const KEY_ROADS = ["US-74", "US-64", "US-25", "US-19", "US-70", "US-221", "US-321", "NC-9", "NC-191", "NC-280", "NC-215", "NC-276", "I-26", "I-40", "I-240", "I-77", "I-81"];
+
+let liveClosures = {};
+let liveBRPAlerts = [];
+let roadDataTimestamp = null;
+
+async function fetchNCDOTClosures() {
+  try {
+    const res = await fetch('https://eapps.ncdot.gov/services/traffic-prod/v1/incidents?active=true');
+    if (!res.ok) throw new Error('NCDOT API error');
+    const data = await res.json();
+    
+    // Get all road closed incident IDs
+    const closedIds = data.roadClosedIncidents || [];
+    if (closedIds.length === 0) return;
+    
+    // Fetch details for first 30 closed incidents (to limit API calls)
+    const batchSize = 10;
+    const idsToFetch = closedIds.slice(0, 30);
+    const batches = [];
+    for (let i = 0; i < idsToFetch.length; i += batchSize) {
+      batches.push(idsToFetch.slice(i, i + batchSize));
+    }
+    
+    const allIncidents = [];
+    for (const batch of batches) {
+      const results = await Promise.all(
+        batch.map(id => 
+          fetch('https://eapps.ncdot.gov/services/traffic-prod/v1/incidents/' + id)
+            .then(r => r.ok ? r.json() : null)
+            .catch(() => null)
+        )
+      );
+      results.forEach(r => { if (r) allIncidents.push(r); });
+    }
+    
+    // Map incidents to days based on county
+    for (const [dayStr, countyIds] of Object.entries(ROUTE_COUNTIES)) {
+      const dayNum = parseInt(dayStr);
+      if (countyIds.length === 0) continue;
+      const relevant = allIncidents.filter(inc => 
+        inc.county && countyIds.includes(inc.county.id) && inc.condition === 'Road Closed'
+      );
+      if (relevant.length > 0) {
+        liveClosures[dayNum] = relevant.map(inc => ({
+          road: (inc.road ? (inc.road.commonName || inc.road.name) : 'Unknown'),
+          status: inc.condition || 'Closed',
+          reason: inc.reason || inc.location || 'Road closure reported'
+        }));
+      }
+    }
+    
+    roadDataTimestamp = new Date().toLocaleString();
+    console.log('NCDOT closures loaded:', Object.keys(liveClosures).length, 'days affected');
+  } catch (err) {
+    console.warn('NCDOT fetch failed:', err);
+  }
+}
+
+async function fetchBRPAlerts() {
+  try {
+    const res = await fetch('https://developer.nps.gov/api/v1/alerts?parkCode=blri&api_key=DEMO_KEY');
+    if (!res.ok) throw new Error('NPS API error');
+    const data = await res.json();
+    liveBRPAlerts = (data.data || []).map(alert => ({
+      title: alert.title,
+      description: alert.description,
+      category: alert.category,
+      url: alert.url || 'https://www.nps.gov/blri/planyourvisit/roadclosures.htm'
+    }));
+    console.log('BRP alerts loaded:', liveBRPAlerts.length);
+  } catch (err) {
+    console.warn('NPS BRP fetch failed:', err);
+  }
+}
+
+// ============================================
 // WEATHER API FUNCTIONS (Open-Meteo — 16-day forecast)
 // ============================================
 
@@ -3853,7 +4019,7 @@ function buildPanel(dayInfo, forecast) {
   }
 
   // Road conditions
-  html += `<div style="margin-top:10px;border-top:1px solid #bbf7d0;padding-top:10px;">`;
+  html += `<div data-road-section="true" style="margin-top:10px;border-top:1px solid #bbf7d0;padding-top:10px;">`;
   html += `<div style="font-size:0.85em;font-weight:600;color:#1B4332;margin-bottom:6px;">🛣️ Road Conditions</div>`;
 
   // Known closures
@@ -3957,6 +4123,72 @@ async function injectWeatherPanels() {
 
     if (placeholders[idx] && placeholders[idx].parentNode) {
       placeholders[idx].parentNode.replaceChild(panel, placeholders[idx]);
+    }
+  });
+}
+
+function enhanceRoadConditions() {
+  // Find all road sections
+  const roadSections = document.querySelectorAll('[data-road-section]');
+  if (!roadSections.length) return;
+  
+  roadSections.forEach((roadSection) => {
+    // Determine day number from the parent weather panel
+    const panel = roadSection.closest('.weather-panel');
+    if (!panel) return;
+    const allPanels = Array.from(document.querySelectorAll('.weather-panel'));
+    const dayNum = allPanels.indexOf(panel) + 1;
+    if (dayNum < 1) return;
+    
+    // Add live NCDOT closures
+    if (liveClosures[dayNum]) {
+      const liveDiv = document.createElement('div');
+      liveDiv.style.cssText = 'margin-bottom:6px;';
+      liveDiv.innerHTML = '<div style="font-size:0.78em;font-weight:600;color:#B45309;margin-bottom:3px;">🔴 Live Road Closures (NCDOT):</div>';
+      for (const c of liveClosures[dayNum]) {
+        const el = document.createElement('div');
+        el.style.cssText = 'font-size:0.82em;color:#DC2626;margin-bottom:2px;';
+        el.textContent = '⛔ ' + c.road + ': ' + c.status + ' — ' + c.reason;
+        liveDiv.appendChild(el);
+      }
+      roadSection.insertBefore(liveDiv, roadSection.children[1]);
+    }
+    
+    // Add live BRP alerts for BRP days
+    if ([6,7,8,10].includes(dayNum) && liveBRPAlerts.length > 0) {
+      const brpDiv = document.createElement('div');
+      brpDiv.style.cssText = 'margin-bottom:6px;';
+      brpDiv.innerHTML = '<div style="font-size:0.78em;font-weight:600;color:#B45309;margin-bottom:3px;">🔴 Live BRP Alerts (NPS):</div>';
+      for (const alert of liveBRPAlerts) {
+        const el = document.createElement('div');
+        el.style.cssText = 'font-size:0.82em;color:#DC2626;margin-bottom:2px;';
+        el.textContent = (alert.category === 'Park Closure' ? '⛔ ' : '⚠️ ') + alert.title;
+        brpDiv.appendChild(el);
+      }
+      const linkEl = document.createElement('div');
+      linkEl.style.cssText = 'font-size:0.75em;margin-top:2px;';
+      linkEl.innerHTML = '<a href="https://www.nps.gov/blri/planyourvisit/roadclosures.htm" target="_blank" style="color:#15803d;">View full BRP closure details →</a>';
+      brpDiv.appendChild(linkEl);
+      
+      // Find existing BRP section or append
+      const existingBRP = Array.from(roadSection.querySelectorAll('div')).find(d => d.textContent.includes('Blue Ridge Parkway'));
+      if (existingBRP) {
+        roadSection.insertBefore(brpDiv, existingBRP);
+      } else {
+        roadSection.appendChild(brpDiv);
+      }
+    }
+    
+    // Add timestamp
+    if (roadDataTimestamp) {
+      let ts = roadSection.querySelector('.road-timestamp');
+      if (!ts) {
+        ts = document.createElement('div');
+        ts.className = 'road-timestamp';
+        ts.style.cssText = 'font-size:0.7em;color:#999;margin-top:6px;font-style:italic;';
+        roadSection.appendChild(ts);
+      }
+      ts.textContent = 'Live data updated: ' + roadDataTimestamp;
     }
   });
 }
@@ -4082,7 +4314,71 @@ async function injectWeatherPanels() {
     }
   })();
 
+  // Body-appended dropdown menu
+  (function() {{
+    var menuBtn = document.getElementById("mainMenuBtn");
+    if (!menuBtn) return;
+
+    var menuItems = [
+      {href: "#ref-0", label: "🔀 Flexibility Guide"},
+      {href: "#ref-1", label: "📅 Events Calendar"},
+      {href: "#ref-2", label: "📋 Booking Checklist"},
+      {href: "#ref-3", label: "🚧 Road Conditions"},
+      {href: "#ref-4", label: "🗺️ Driving Summary"},
+      {href: "#ref-5", label: "🏠 Lodging Guide"},
+      {href: "#ref-6", label: "🏔️ Land Scouting"},
+      {href: "#ref-7", label: "📍 Scouting Summary"},
+      {href: "#ref-8", label: "📍 Context"},
+      {href: "#ref-9", label: "🛒 Costco Locations"},
+      {href: "#ref-10", label: "🚗 Vehicle Notes"},
+      {href: "#ref-11", label: "🦇 Horror & Spooky Shops"},
+      {href: "#ref-12", label: "🎮 Kid-Friendly Activities"},
+      {href: "#ref-13", label: "🧳 Packing List"}
+    ];
+
+    function closeMenu() {{
+      var existing = document.querySelector(".menu-panel");
+      if (existing) existing.remove();
+    }}
+
+    menuBtn.addEventListener("click", function(e) {{
+      e.stopPropagation();
+      var existing = document.querySelector(".menu-panel");
+      if (existing) {{
+        existing.remove();
+        return;
+      }}
+      var panel = document.createElement("div");
+      panel.className = "menu-panel";
+      var header = document.createElement("div");
+      header.className = "menu-panel-header";
+      header.textContent = "Reference & Planning";
+      panel.appendChild(header);
+      menuItems.forEach(function(item) {{
+        var a = document.createElement("a");
+        a.href = item.href;
+        a.textContent = item.label;
+        a.addEventListener("click", function() {{
+          closeMenu();
+        }});
+        panel.appendChild(a);
+      }});
+      document.body.appendChild(panel);
+    }});
+
+    document.addEventListener("click", function(e) {{
+      if (!e.target.closest(".menu-panel") && e.target !== menuBtn) {{
+        closeMenu();
+      }}
+    }});
+  }})();
+
 setTimeout(injectWeatherPanels, 500);
+
+setTimeout(async function() {
+  await Promise.all([fetchNCDOTClosures(), fetchBRPAlerts()]);
+  enhanceRoadConditions();
+}, 1500);
 });
 </script>
 
