@@ -3731,57 +3731,72 @@ function buildPanel(dayInfo, forecast) {
   let html = `<div style="font-size:1.1em;font-weight:700;color:#1B4332;margin-bottom:8px;">🌤️ Weather &amp; Conditions — ${location}</div>`;
 
   if (!day && !night) {
-    html += `<div style="color:#666;font-style:italic;">Forecast available ~7 days before ${dateStr}</div>`;
-    panel.innerHTML = html;
-    return panel;
-  }
+    html += `<div style="color:#666;font-style:italic;margin-bottom:8px;">Forecast available ~7 days before ${dateStr}</div>`;
 
-  const high = day ? day.temperature : (night ? night.temperature : "--");
-  const low = night ? night.temperature : (day ? day.temperature - 15 : "--");
-  const forecastText = day ? day.shortForecast : (night ? night.shortForecast : "N/A");
-  const detailedForecast = day ? day.detailedForecast : "";
-  const windDay = day ? day.windSpeed : "";
-  const windNight = night ? night.windSpeed : "";
-  const windDir = day ? (day.windDirection || "") : "";
-  const precipDay = day && day.probabilityOfPrecipitation ? day.probabilityOfPrecipitation.value : null;
-  const precipNight = night && night.probabilityOfPrecipitation ? night.probabilityOfPrecipitation.value : null;
-  const windSpeed = parseWindSpeed(windDay || windNight);
-
-  const icon = conditionIcon(forecastText);
-
-  html += `<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">`;
-  html += `<span style="font-size:2.2em;">${icon}</span>`;
-  html += `<div>`;
-  html += `<div style="font-size:1.3em;font-weight:600;">${high}°F / ${low}°F</div>`;
-  html += `<div style="color:#555;">${forecastText}</div>`;
-  html += `</div></div>`;
-
-  if (precipDay !== null || precipNight !== null) {
-    const pDay = precipDay !== null ? precipDay : "--";
-    const pNight = precipNight !== null ? precipNight : "--";
-    html += `<div style="font-size:0.9em;color:#555;margin-bottom:4px;">💧 Precip: ${pDay}% day / ${pNight}% night</div>`;
-  }
-
-  if (windDay || windNight) {
-    html += `<div style="font-size:0.9em;color:#555;margin-bottom:10px;">🌬️ Wind: ${windDay || windNight} ${windDir}</div>`;
-  }
-
-  // Clothing strip
-  const highNum = typeof high === "number" ? high : 60;
-  const lowNum = typeof low === "number" ? low : 40;
-  const clothing = getClothingItems(highNum, lowNum, forecastText, windSpeed, dayNum);
-
-  if (clothing.length > 0) {
-    html += `<div style="margin-top:8px;margin-bottom:10px;">`;
-    html += `<div style="font-size:0.85em;font-weight:600;color:#1B4332;margin-bottom:6px;">🧥 What to Wear</div>`;
-    html += `<div style="display:flex;flex-wrap:wrap;gap:8px;">`;
-    for (const item of clothing) {
-      html += `<div style="display:flex;flex-direction:column;align-items:center;width:52px;">`;
-      html += `<div style="width:36px;height:36px;">${item.icon}</div>`;
-      html += `<span style="font-size:0.7em;text-align:center;color:#333;margin-top:2px;">${item.label}</span>`;
-      html += `</div>`;
+    // Default clothing for March in WNC when forecast not available
+    const defaultClothing = getClothingItems(55, 35, "Partly Cloudy", 8, dayNum);
+    if (defaultClothing.length > 0) {
+      html += `<div style="margin-top:8px;margin-bottom:10px;">`;
+      html += `<div style="font-size:0.85em;font-weight:600;color:#1B4332;margin-bottom:6px;">🧥 What to Pack (typical March conditions)</div>`;
+      html += `<div style="display:flex;flex-wrap:wrap;gap:8px;">`;
+      for (const item of defaultClothing) {
+        html += `<div style="display:flex;flex-direction:column;align-items:center;width:52px;">`;
+        html += `<div style="width:36px;height:36px;">${item.icon}</div>`;
+        html += `<span style="font-size:0.7em;text-align:center;color:#333;margin-top:2px;">${item.label}</span>`;
+        html += `</div>`;
+      }
+      html += `</div></div>`;
     }
+  }
+
+  else {
+    const high = day ? day.temperature : (night ? night.temperature : "--");
+    const low = night ? night.temperature : (day ? day.temperature - 15 : "--");
+    const forecastText = day ? day.shortForecast : (night ? night.shortForecast : "N/A");
+    const detailedForecast = day ? day.detailedForecast : "";
+    const windDay = day ? day.windSpeed : "";
+    const windNight = night ? night.windSpeed : "";
+    const windDir = day ? (day.windDirection || "") : "";
+    const precipDay = day && day.probabilityOfPrecipitation ? day.probabilityOfPrecipitation.value : null;
+    const precipNight = night && night.probabilityOfPrecipitation ? night.probabilityOfPrecipitation.value : null;
+    const windSpeed = parseWindSpeed(windDay || windNight);
+
+    const icon = conditionIcon(forecastText);
+
+    html += `<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">`;
+    html += `<span style="font-size:2.2em;">${icon}</span>`;
+    html += `<div>`;
+    html += `<div style="font-size:1.3em;font-weight:600;">${high}°F / ${low}°F</div>`;
+    html += `<div style="color:#555;">${forecastText}</div>`;
     html += `</div></div>`;
+
+    if (precipDay !== null || precipNight !== null) {
+      const pDay = precipDay !== null ? precipDay : "--";
+      const pNight = precipNight !== null ? precipNight : "--";
+      html += `<div style="font-size:0.9em;color:#555;margin-bottom:4px;">💧 Precip: ${pDay}% day / ${pNight}% night</div>`;
+    }
+
+    if (windDay || windNight) {
+      html += `<div style="font-size:0.9em;color:#555;margin-bottom:10px;">🌬️ Wind: ${windDay || windNight} ${windDir}</div>`;
+    }
+
+    // Clothing strip
+    const highNum = typeof high === "number" ? high : 60;
+    const lowNum = typeof low === "number" ? low : 40;
+    const clothing = getClothingItems(highNum, lowNum, forecastText, windSpeed, dayNum);
+
+    if (clothing.length > 0) {
+      html += `<div style="margin-top:8px;margin-bottom:10px;">`;
+      html += `<div style="font-size:0.85em;font-weight:600;color:#1B4332;margin-bottom:6px;">🧥 What to Wear</div>`;
+      html += `<div style="display:flex;flex-wrap:wrap;gap:8px;">`;
+      for (const item of clothing) {
+        html += `<div style="display:flex;flex-direction:column;align-items:center;width:52px;">`;
+        html += `<div style="width:36px;height:36px;">${item.icon}</div>`;
+        html += `<span style="font-size:0.7em;text-align:center;color:#333;margin-top:2px;">${item.label}</span>`;
+        html += `</div>`;
+      }
+      html += `</div></div>`;
+    }
   }
 
   // Road conditions
