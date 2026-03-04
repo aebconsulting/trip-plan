@@ -312,6 +312,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
+    flex-wrap: wrap;
     position: relative;
     overflow: hidden;
   }
@@ -337,6 +338,13 @@
     text-transform: uppercase;
     border: 1px solid rgba(255,255,255,0.2);
     backdrop-filter: blur(8px);
+  }
+  .day-date {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.82em;
+    font-weight: 400;
+    opacity: 0.8;
+    white-space: nowrap;
   }
   .day-title {
     font-family: 'Fraunces', serif;
@@ -808,6 +816,27 @@
     color: var(--cream) !important;
     border-color: var(--forest) !important;
   }
+
+
+  /* ===== REFERENCE SECTIONS ===== */
+  .reference-container {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    margin-top: 32px;
+    overflow: hidden;
+  }
+  .reference-container details {
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .reference-container details:last-child {
+    border-bottom: none;
+  }
+  .ref-nav a:hover {
+    background: var(--forest) !important;
+    color: white !important;
+  }
+
 
   /* ===== MOBILE ===== */
   @media (max-width: 640px) {
@@ -3394,12 +3423,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const header = document.createElement('div');
     header.className = 'day-header';
 
-    // Clean up the title
-    let titleText = h2.textContent
-      .replace(/Day\s+\d+\s*[\u2014\u2013-]\s*/, '')
-      .replace(/^[^:]+:\s*/, '');
+    // Extract date and title from heading like "Tuesday, March 11th: Drive to Savannah"
+    let afterDay = h2.textContent.replace(/Day\s+\d+\s*[\u2014\u2013-]\s*/, '');
+    let dateText = '';
+    let titleText = afterDay;
+    const colonIdx = afterDay.indexOf(':');
+    if (colonIdx > -1) {
+      dateText = afterDay.substring(0, colonIdx).trim();
+      titleText = afterDay.substring(colonIdx + 1).trim();
+    }
 
-    header.innerHTML = '<span class="day-number">DAY ' + dayNum + '</span><span class="day-title">' + titleText + '</span>';
+    let headerHtml = '<span class="day-number">DAY ' + dayNum + '</span>';
+    if (dateText) {
+      headerHtml += '<span class="day-date">' + dateText + '</span>';
+    }
+    headerHtml += '<span class="day-title">' + titleText + '</span>';
+    header.innerHTML = headerHtml;
 
     const body = document.createElement('div');
     body.className = 'day-body';
@@ -3921,6 +3960,127 @@ async function injectWeatherPanels() {
     }
   });
 }
+
+
+  // ============================================
+  // REORDER: Days first, then reference sections
+  // ============================================
+
+  (function reorderSections() {
+    const container = document.querySelector('.content-wrap') || document.body;
+
+    const daySections = Array.from(document.querySelectorAll('.day-section'));
+    const detailsSections = Array.from(document.querySelectorAll('details'));
+
+    const remainingH2s = [];
+    document.querySelectorAll('h2').forEach(h2 => {
+      if (!h2.closest('.day-section') && !h2.closest('details')) {
+        const elements = [h2];
+        let next = h2.nextElementSibling;
+        while (next && next.tagName !== 'H2' && next.tagName !== 'DETAILS' && !next.classList.contains('day-section') && !next.classList.contains('hero') && !next.classList.contains('nav-bar')) {
+          elements.push(next);
+          next = next.nextElementSibling;
+        }
+        const details = document.createElement('details');
+        details.className = 'reference-section';
+        const summary = document.createElement('summary');
+        summary.innerHTML = h2.innerHTML;
+        summary.style.cssText = 'cursor:pointer;font-family:Fraunces,serif;font-size:1.15em;font-weight:600;padding:16px 22px;color:var(--forest);';
+        details.appendChild(summary);
+        const content = document.createElement('div');
+        content.style.cssText = 'padding:0 22px 16px 22px;';
+        elements.slice(1).forEach(el => content.appendChild(el));
+        details.appendChild(content);
+        remainingH2s.push({ original: h2, details: details });
+      }
+    });
+
+    remainingH2s.forEach(item => {
+      if (item.original.parentNode) item.original.remove();
+    });
+
+    const refContainer = document.createElement('div');
+    refContainer.className = 'reference-container';
+    refContainer.id = 'reference-sections';
+
+    const refHeader = document.createElement('div');
+    refHeader.style.cssText = 'background:linear-gradient(135deg,var(--forest) 0%,var(--forest-mid) 100%);color:var(--cream);padding:18px 26px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;margin-top:32px;font-family:Fraunces,serif;font-size:1.3em;font-weight:700;';
+    refHeader.textContent = 'Reference & Planning';
+    refContainer.appendChild(refHeader);
+
+    const refNav = document.createElement('div');
+    refNav.className = 'ref-nav';
+    refNav.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;padding:12px 22px;background:#f0fdf4;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;';
+
+    const refOrder = [
+      'Flexibility Guide',
+      'Events Calendar',
+      'Booking Checklist',
+      'Road Condition',
+      'Driving Summary',
+      'Lodging Guide',
+      'Land Scouting',
+      'Scouting to Live',
+      'Context',
+      'Costco',
+      'Vehicle Notes',
+      'Horror',
+      'Kid-Friendly',
+      'Packing List'
+    ];
+
+    const allRef = [...detailsSections, ...remainingH2s.map(r => r.details)];
+
+    const sorted = [];
+    for (const keyword of refOrder) {
+      const found = allRef.find(el => {
+        const text = el.querySelector('summary')?.textContent || el.textContent;
+        return text.includes(keyword);
+      });
+      if (found) sorted.push(found);
+    }
+    for (const el of allRef) {
+      if (!sorted.includes(el)) sorted.push(el);
+    }
+
+    sorted.forEach((section, idx) => {
+      const summaryText = section.querySelector('summary')?.textContent.trim() || 'Section';
+      const sectionId = 'ref-' + idx;
+      section.id = sectionId;
+
+      const pill = document.createElement('a');
+      pill.href = '#' + sectionId;
+      pill.textContent = summaryText.replace(/^[^\w]*/, '').substring(0, 30);
+      pill.style.cssText = 'font-size:0.75em;padding:4px 10px;background:white;border:1px solid #bbf7d0;border-radius:20px;color:var(--forest);text-decoration:none;white-space:nowrap;font-family:Outfit,sans-serif;';
+      refNav.appendChild(pill);
+
+      refContainer.appendChild(section);
+    });
+
+    const hero = document.querySelector('.hero');
+    const navBar = document.querySelector('.nav-bar');
+    // Insert days after hero banner (hero comes after nav-bar in DOM)
+    let insertAfter = hero || navBar;
+
+    if (insertAfter && insertAfter.parentNode) {
+      // Insert each day section after the hero
+      let afterHero = insertAfter.nextSibling;
+      daySections.forEach(ds => {
+        insertAfter.parentNode.insertBefore(ds, afterHero);
+        // Update afterHero to be after the just-inserted day section
+        afterHero = ds.nextSibling;
+      });
+
+      refContainer.insertBefore(refNav, refContainer.children[1]);
+
+      const lastDay = daySections[daySections.length - 1];
+      if (lastDay && lastDay.nextSibling) {
+        lastDay.parentNode.insertBefore(refContainer, lastDay.nextSibling);
+      } else {
+        container.appendChild(refContainer);
+      }
+    }
+  })();
 
 setTimeout(injectWeatherPanels, 500);
 });
