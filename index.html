@@ -641,6 +641,174 @@
   .day-section:nth-child(2) { animation-delay: 0.1s; }
   .day-section:nth-child(3) { animation-delay: 0.15s; }
 
+
+  /* ===== WEATHER + CLOTHING + ROAD CONDITIONS ===== */
+  .weather-panel {
+    background: linear-gradient(135deg, var(--parchment) 0%, var(--cream-dark) 100%);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin: 0 0 var(--space-md);
+    box-shadow: var(--shadow-sm);
+  }
+  .weather-panel-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.72em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin: 0 0 10px;
+  }
+  .weather-conditions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+  .weather-icon { font-size: 2em; line-height: 1; }
+  .weather-temps { display: flex; flex-direction: column; gap: 2px; }
+  .weather-high {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4em;
+    font-weight: 700;
+    color: var(--forest);
+    line-height: 1;
+  }
+  .weather-low {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.82em;
+    color: var(--text-muted);
+  }
+  .weather-details { display: flex; flex-direction: column; gap: 2px; }
+  .weather-forecast {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.92em;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .weather-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75em;
+    color: var(--text-muted);
+    display: flex;
+    gap: 12px;
+  }
+  .weather-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+  }
+  .weather-loading .skeleton {
+    height: 14px;
+    border-radius: 7px;
+    background: linear-gradient(90deg, var(--border-light) 25%, var(--cream) 50%, var(--border-light) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  .weather-unavailable {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85em;
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 6px 0;
+  }
+  .clothing-label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.72em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--terracotta);
+    margin: 12px 0 8px;
+  }
+  .clothing-strip {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 0;
+    scrollbar-width: none;
+  }
+  .clothing-strip::-webkit-scrollbar { display: none; }
+  .clothing-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 64px;
+    padding: 8px 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
+  }
+  .clothing-item:hover {
+    border-color: var(--terracotta);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+  }
+  .clothing-item svg { width: 32px; height: 32px; }
+  .clothing-item-label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.68em;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-align: center;
+    white-space: nowrap;
+  }
+  .road-section {
+    border-top: 1px solid var(--border-light);
+    margin-top: 14px;
+    padding-top: 12px;
+  }
+  .road-section-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.72em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin: 0 0 8px;
+  }
+  .road-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85em;
+  }
+  .road-status.road-clear { color: var(--forest-mid); }
+  .road-status.road-closed { color: var(--warning-border); font-weight: 600; }
+  .road-links {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .road-link {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75em;
+    font-weight: 600;
+    color: var(--forest-mid) !important;
+    padding: 4px 12px;
+    border: 1px solid var(--border) !important;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .road-link:hover {
+    background: var(--forest);
+    color: var(--cream) !important;
+    border-color: var(--forest) !important;
+  }
+
   /* ===== MOBILE ===== */
   @media (max-width: 640px) {
     body { padding: 0 12px 30px; font-size: 14px; }
@@ -664,6 +832,11 @@
     .map-link { padding: 8px 16px; font-size: 0.82em; }
     h2 { font-size: 1.12em; }
     .alert { padding: 14px 16px; }
+    .weather-panel { padding: 14px 16px; }
+    .weather-conditions { gap: 10px; }
+    .weather-high { font-size: 1.2em; }
+    .clothing-item { min-width: 56px; padding: 6px 8px; }
+    .clothing-item svg { width: 28px; height: 28px; }
   }
 
   @media (max-width: 400px) {
@@ -3135,6 +3308,7 @@ This is a direct tension with your goal of land near a stream. Here&rsquo;s how 
 <li>Take photos of neighborhoods, not just tourist spots</li>
 <li>Save real estate listings to browse in the evenings</li>
 </ul>
+<hr />
 
 <div class="back-top"><a href="#top">&uarr; Back to Top</a></div>
 
@@ -3316,6 +3490,410 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+// ============================================
+// WEATHER, CLOTHING & ROAD CONDITIONS MODULE
+// ============================================
+
+const DAY_LOCATIONS = [
+  { day: 1, date: "2026-03-11", lat: 32.0809, lon: -81.0912, name: "Savannah GA" },
+  { day: 2, date: "2026-03-12", lat: 35.5951, lon: -82.5515, name: "Asheville NC" },
+  { day: 3, date: "2026-03-13", lat: 35.5951, lon: -82.5515, name: "Asheville NC" },
+  { day: 4, date: "2026-03-14", lat: 35.3185, lon: -82.4612, name: "Hendersonville NC" },
+  { day: 5, date: "2026-03-15", lat: 35.5951, lon: -82.5515, name: "Asheville NC" },
+  { day: 6, date: "2026-03-16", lat: 35.439, lon: -82.2462, name: "Chimney Rock NC" },
+  { day: 7, date: "2026-03-17", lat: 35.2716, lon: -82.7717, name: "Pisgah Forest NC" },
+  { day: 8, date: "2026-03-18", lat: 35.2334, lon: -82.7343, name: "Brevard NC" },
+  { day: 9, date: "2026-03-19", lat: 36.1338, lon: -81.671, name: "Blowing Rock NC" },
+  { day: 10, date: "2026-03-20", lat: 36.1338, lon: -81.671, name: "Blowing Rock NC" },
+  { day: 11, date: "2026-03-21", lat: 32.0809, lon: -81.0912, name: "Savannah GA" },
+  { day: 12, date: "2026-03-22", lat: 26.2129, lon: -80.2498, name: "Tamarac FL" },
+];
+
+const HIKING_DAYS = [3, 4, 6, 7, 8, 9, 10];
+const DRIVE_DAYS = [1, 2, 11, 12];
+
+const CLOTHING_ICONS = {
+
+  heavyJacket: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L6 8V28H14V16H22V28H30V8L24 4"/><path d="M12 4C12 4 14 6 18 6C22 6 24 4 24 4"/><line x1="18" y1="16" x2="18" y2="28"/><line x1="16" y1="20" x2="16" y2="24"/><line x1="20" y1="20" x2="20" y2="24"/></svg>`,
+
+  lightJacket: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L6 8V28H14V16H22V28H30V8L24 4"/><path d="M12 4C12 4 14 6 18 6C22 6 24 4 24 4"/></svg>`,
+
+  fleece: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L6 8V28H14V16H22V28H30V8L24 4"/><path d="M12 4C12 4 14 6 18 6C22 6 24 4 24 4"/><line x1="10" y1="10" x2="10" y2="26"/><line x1="13" y1="10" x2="13" y2="14"/><line x1="26" y1="10" x2="26" y2="26"/><line x1="23" y1="10" x2="23" y2="14"/></svg>`,
+
+  tshirt: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L4 10L8 12L10 10V30H26V10L28 12L32 10L24 4"/><path d="M12 4C12 4 14 7 18 7C22 7 24 4 24 4"/></svg>`,
+
+  rainJacket: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L6 8V28H14V16H22V28H30V8L24 4"/><path d="M12 4C12 4 14 6 18 6C22 6 24 4 24 4"/><circle cx="8" cy="32" r="1"/><circle cx="14" cy="34" r="1"/><circle cx="11" cy="31" r="1"/></svg>`,
+
+  umbrella: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6C10 6 4 12 4 18H32C32 12 26 6 18 6Z"/><line x1="18" y1="6" x2="18" y2="30"/><path d="M18 30C18 32 16 34 14 32"/></svg>`,
+
+  longPants: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H26V14L22 32H20L18 18L16 32H14L10 14Z"/></svg>`,
+
+  shorts: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H26V12L22 22H20L18 14L16 22H14L10 12Z"/></svg>`,
+
+  hikingBoots: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12V24H4V28H28V24H20V8H14V12Z"/><line x1="14" y1="14" x2="8" y2="14"/><line x1="14" y1="18" x2="10" y2="18"/><path d="M4 28H28V30H4Z"/></svg>`,
+
+  sunHat: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="18" cy="22" rx="16" ry="4"/><path d="M10 22V16C10 12 13 8 18 8C23 8 26 12 26 16V22"/></svg>`,
+
+  gloves: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 32V14H14V6H18V14H22V8H26V20L24 32Z"/><line x1="14" y1="14" x2="14" y2="32"/><line x1="18" y1="14" x2="18" y2="32"/><line x1="22" y1="14" x2="22" y2="32"/></svg>`,
+
+  sunglasses: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="14" width="10" height="8" rx="3"/><rect x="22" y="14" width="10" height="8" rx="3"/><path d="M14 18H22"/><line x1="4" y1="16" x2="2" y2="14"/><line x1="32" y1="16" x2="34" y2="14"/></svg>`,
+
+  sunscreen: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="10" width="16" height="22" rx="3"/><rect x="12" y="4" width="12" height="6" rx="2"/><line x1="14" y1="18" x2="22" y2="18"/><line x1="14" y1="22" x2="22" y2="22"/><line x1="14" y1="26" x2="22" y2="26"/></svg>`,
+
+  layers: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 4L4 14L18 24L32 14Z"/><path d="M4 18L18 28L32 18"/><path d="M4 22L18 32L32 22"/></svg>`,
+
+  comfyShoes: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22C4 18 8 14 14 14H20C26 14 30 16 32 20V24H4Z"/><line x1="4" y1="24" x2="32" y2="24"/><path d="M14 14V12C14 10 16 8 18 8"/></svg>`,
+
+  windbreaker: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L6 8V28H14V16H22V28H30V8L24 4"/><path d="M12 4C12 4 14 6 18 6C22 6 24 4 24 4"/><path d="M2 12L6 14"/><path d="M2 16L6 18"/><path d="M2 20L6 22"/></svg>`,
+
+  daypack: `<svg viewBox="0 0 36 36" fill="none" stroke="#1B4332" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="10" width="20" height="22" rx="4"/><path d="M12 10V6C12 4 14 2 18 2C22 2 24 4 24 6V10"/><rect x="12" y="16" width="12" height="8" rx="2"/><line x1="18" y1="16" x2="18" y2="24"/></svg>`,
+
+};
+
+function conditionIcon(forecast) {
+  const f = forecast.toLowerCase();
+  if (f.includes("thunder")) return "⛈️";
+  if (f.includes("rain") || f.includes("shower") || f.includes("drizzle")) return "🌧️";
+  if (f.includes("snow") || f.includes("sleet") || f.includes("ice") || f.includes("flurr")) return "❄️";
+  if (f.includes("fog") || f.includes("mist") || f.includes("haze")) return "🌫️";
+  if (f.includes("cloud") || f.includes("overcast")) return "☁️";
+  if (f.includes("partly")) return "⛅";
+  if (f.includes("wind")) return "🌬️";
+  if (f.includes("sunny") || f.includes("clear")) return "☀️";
+  return "🌤️";
+}
+
+function getClothingItems(high, low, forecast, windSpeed, dayNum) {
+  const items = [];
+  const f = forecast.toLowerCase();
+  const isHike = HIKING_DAYS.includes(dayNum);
+  const isDrive = DRIVE_DAYS.includes(dayNum);
+
+  if (low < 35) {
+    items.push({ icon: CLOTHING_ICONS.heavyJacket, label: "Heavy Jacket" });
+    items.push({ icon: CLOTHING_ICONS.gloves, label: "Gloves" });
+    items.push({ icon: CLOTHING_ICONS.layers, label: "Warm Layers" });
+    items.push({ icon: CLOTHING_ICONS.longPants, label: "Long Pants" });
+  } else if (low < 45) {
+    items.push({ icon: CLOTHING_ICONS.lightJacket, label: "Jacket" });
+    items.push({ icon: CLOTHING_ICONS.layers, label: "Layers" });
+    items.push({ icon: CLOTHING_ICONS.longPants, label: "Long Pants" });
+  } else if (low < 55) {
+    items.push({ icon: CLOTHING_ICONS.fleece, label: "Fleece" });
+    items.push({ icon: CLOTHING_ICONS.layers, label: "Layers" });
+    items.push({ icon: CLOTHING_ICONS.longPants, label: "Long Pants" });
+  } else if (high > 75) {
+    items.push({ icon: CLOTHING_ICONS.tshirt, label: "T-Shirt" });
+    items.push({ icon: CLOTHING_ICONS.shorts, label: "Shorts" });
+    items.push({ icon: CLOTHING_ICONS.sunHat, label: "Sun Hat" });
+    items.push({ icon: CLOTHING_ICONS.sunscreen, label: "Sunscreen" });
+  } else {
+    items.push({ icon: CLOTHING_ICONS.tshirt, label: "T-Shirt" });
+    items.push({ icon: CLOTHING_ICONS.longPants, label: "Long Pants" });
+  }
+
+  if (f.includes("rain") || f.includes("shower") || f.includes("drizzle") || f.includes("thunder")) {
+    items.push({ icon: CLOTHING_ICONS.rainJacket, label: "Rain Jacket" });
+    items.push({ icon: CLOTHING_ICONS.umbrella, label: "Umbrella" });
+  }
+
+  if (windSpeed > 15) {
+    items.push({ icon: CLOTHING_ICONS.windbreaker, label: "Windbreaker" });
+  }
+
+  if (isHike) {
+    items.push({ icon: CLOTHING_ICONS.hikingBoots, label: "Hiking Boots" });
+    items.push({ icon: CLOTHING_ICONS.daypack, label: "Daypack" });
+  }
+
+  if (isDrive) {
+    items.push({ icon: CLOTHING_ICONS.comfyShoes, label: "Comfy Shoes" });
+  }
+
+  if (high > 65 && low > 45) {
+    items.push({ icon: CLOTHING_ICONS.sunglasses, label: "Sunglasses" });
+  }
+
+  return items;
+}
+
+// ============================================
+// ROAD CONDITIONS DATA
+// ============================================
+
+const KNOWN_CLOSURES = {
+  6: [
+    { road: "US-74A", status: "Closed", reason: "Helene damage — impassable near Chimney Rock" },
+    { road: "US-64", status: "Closed", reason: "Helene damage — Lake Lure area" },
+    { road: "NC-9", status: "Closed", reason: "Helene damage — Bat Cave section" }
+  ]
+};
+
+const KNOWN_BRP = [
+  { section: "MP 316.5 – 355.3", status: "Closed", note: "Structural damage" },
+  { section: "MP 420.2 – 443.0", status: "Closed", note: "Landslide area" },
+  { section: "MP 305 – 317", status: "Open", note: "Ridge Junction area" },
+  { section: "MP 375.7 – 393.6", status: "Open", note: "Waterrock Knob area" },
+  { section: "MP 393.6 – 420.2", status: "Open", note: "Balsam area" }
+];
+
+const ROAD_LINKS = {
+  NC: { label: "DriveNC.gov", url: "https://drivenc.gov" },
+  GA: { label: "511GA.org", url: "https://511ga.org" },
+  SC: { label: "511SC.org", url: "https://511sc.org" },
+  FL: { label: "FL511.com", url: "https://fl511.com" },
+  BRP: { label: "NPS BRP Closures", url: "https://www.nps.gov/blri/planyourvisit/roadclosures.htm" }
+};
+
+const DAY_ROAD_LINKS = {
+  1: ["GA", "SC"],
+  2: ["SC", "NC"],
+  3: ["NC"],
+  4: ["NC"],
+  5: ["NC"],
+  6: ["NC", "BRP"],
+  7: ["NC", "BRP"],
+  8: ["NC", "BRP"],
+  9: ["NC"],
+  10: ["NC", "BRP"],
+  11: ["NC", "SC", "GA"],
+  12: ["GA", "FL"]
+};
+
+const BRP_DAYS = [6, 7, 8, 10];
+
+// ============================================
+// WEATHER API FUNCTIONS
+// ============================================
+
+const weatherCache = {};
+
+async function fetchWeather(lat, lon) {
+  const key = `${lat},${lon}`;
+  if (weatherCache[key]) return weatherCache[key];
+
+  try {
+    const pointsRes = await fetch(`https://api.weather.gov/points/${lat},${lon}`, {
+      headers: { "User-Agent": "TripPlanner/1.0 (travel@example.com)" }
+    });
+    if (!pointsRes.ok) throw new Error(`Points API error: ${pointsRes.status}`);
+    const pointsData = await pointsRes.json();
+    const forecastUrl = pointsData.properties.forecast;
+
+    const forecastRes = await fetch(forecastUrl, {
+      headers: { "User-Agent": "TripPlanner/1.0 (travel@example.com)" }
+    });
+    if (!forecastRes.ok) throw new Error(`Forecast API error: ${forecastRes.status}`);
+    const forecastData = await forecastRes.json();
+
+    const periods = forecastData.properties.periods;
+    weatherCache[key] = periods;
+    return periods;
+  } catch (err) {
+    console.warn(`Weather fetch failed for ${lat},${lon}:`, err);
+    return null;
+  }
+}
+
+function findForecast(periods, dateStr) {
+  if (!periods) return { day: null, night: null };
+  let day = null, night = null;
+  for (const p of periods) {
+    const pDate = p.startTime.slice(0, 10);
+    if (pDate === dateStr) {
+      if (p.isDaytime) day = p;
+      else night = p;
+    }
+  }
+  return { day, night };
+}
+
+function parseWindSpeed(windStr) {
+  if (!windStr) return 0;
+  const match = windStr.match(/(\d+)/);
+  return match ? parseInt(match[1], 10) : 0;
+}
+
+// ============================================
+// PANEL BUILDER
+// ============================================
+
+function buildPanel(dayInfo, forecast) {
+  const panel = document.createElement("div");
+  panel.className = "weather-panel";
+  panel.style.cssText = "background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin:8px 0 16px 0;font-family:inherit;";
+
+  const { day, night } = forecast;
+  const dayNum = dayInfo.day;
+  const location = dayInfo.name;
+  const dateStr = dayInfo.date;
+
+  let html = `<div style="font-size:1.1em;font-weight:700;color:#1B4332;margin-bottom:8px;">🌤️ Weather &amp; Conditions — ${location}</div>`;
+
+  if (\!day && \!night) {
+    html += `<div style="color:#666;font-style:italic;">Forecast available ~7 days before ${dateStr}</div>`;
+    panel.innerHTML = html;
+    return panel;
+  }
+
+  const high = day ? day.temperature : (night ? night.temperature : "--");
+  const low = night ? night.temperature : (day ? day.temperature - 15 : "--");
+  const forecastText = day ? day.shortForecast : (night ? night.shortForecast : "N/A");
+  const detailedForecast = day ? day.detailedForecast : "";
+  const windDay = day ? day.windSpeed : "";
+  const windNight = night ? night.windSpeed : "";
+  const windDir = day ? (day.windDirection || "") : "";
+  const precipDay = day && day.probabilityOfPrecipitation ? day.probabilityOfPrecipitation.value : null;
+  const precipNight = night && night.probabilityOfPrecipitation ? night.probabilityOfPrecipitation.value : null;
+  const windSpeed = parseWindSpeed(windDay || windNight);
+
+  const icon = conditionIcon(forecastText);
+
+  html += `<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">`;
+  html += `<span style="font-size:2.2em;">${icon}</span>`;
+  html += `<div>`;
+  html += `<div style="font-size:1.3em;font-weight:600;">${high}°F / ${low}°F</div>`;
+  html += `<div style="color:#555;">${forecastText}</div>`;
+  html += `</div></div>`;
+
+  if (precipDay \!== null || precipNight \!== null) {
+    const pDay = precipDay \!== null ? precipDay : "--";
+    const pNight = precipNight \!== null ? precipNight : "--";
+    html += `<div style="font-size:0.9em;color:#555;margin-bottom:4px;">💧 Precip: ${pDay}% day / ${pNight}% night</div>`;
+  }
+
+  if (windDay || windNight) {
+    html += `<div style="font-size:0.9em;color:#555;margin-bottom:10px;">🌬️ Wind: ${windDay || windNight} ${windDir}</div>`;
+  }
+
+  // Clothing strip
+  const highNum = typeof high === "number" ? high : 60;
+  const lowNum = typeof low === "number" ? low : 40;
+  const clothing = getClothingItems(highNum, lowNum, forecastText, windSpeed, dayNum);
+
+  if (clothing.length > 0) {
+    html += `<div style="margin-top:8px;margin-bottom:10px;">`;
+    html += `<div style="font-size:0.85em;font-weight:600;color:#1B4332;margin-bottom:6px;">🧥 What to Wear</div>`;
+    html += `<div style="display:flex;flex-wrap:wrap;gap:8px;">`;
+    for (const item of clothing) {
+      html += `<div style="display:flex;flex-direction:column;align-items:center;width:52px;">`;
+      html += `<div style="width:36px;height:36px;">${item.icon}</div>`;
+      html += `<span style="font-size:0.7em;text-align:center;color:#333;margin-top:2px;">${item.label}</span>`;
+      html += `</div>`;
+    }
+    html += `</div></div>`;
+  }
+
+  // Road conditions
+  html += `<div style="margin-top:10px;border-top:1px solid #bbf7d0;padding-top:10px;">`;
+  html += `<div style="font-size:0.85em;font-weight:600;color:#1B4332;margin-bottom:6px;">🛣️ Road Conditions</div>`;
+
+  // Known closures
+  if (KNOWN_CLOSURES[dayNum]) {
+    html += `<div style="margin-bottom:6px;">`;
+    for (const c of KNOWN_CLOSURES[dayNum]) {
+      html += `<div style="font-size:0.85em;color:#DC2626;margin-bottom:2px;">⛔ ${c.road}: ${c.status} — ${c.reason}</div>`;
+    }
+    html += `</div>`;
+  }
+
+  // BRP status
+  if (BRP_DAYS.includes(dayNum)) {
+    html += `<div style="margin-bottom:6px;">`;
+    html += `<div style="font-size:0.85em;font-weight:600;color:#1B4332;margin-bottom:3px;">Blue Ridge Parkway Status:</div>`;
+    for (const s of KNOWN_BRP) {
+      const color = s.status === "Closed" ? "#DC2626" : "#16A34A";
+      const sym = s.status === "Closed" ? "⛔" : "✅";
+      html += `<div style="font-size:0.82em;color:${color};margin-bottom:1px;">${sym} ${s.section}: ${s.status} (${s.note})</div>`;
+    }
+    html += `</div>`;
+  }
+
+  // Road links
+  const linkKeys = DAY_ROAD_LINKS[dayNum] || [];
+  if (linkKeys.length > 0) {
+    html += `<div style="font-size:0.82em;color:#555;">`;
+    html += `Check conditions: `;
+    const linkHtmlArr = linkKeys.map(k => {
+      const lnk = ROAD_LINKS[k];
+      return `<a href="${lnk.url}" target="_blank" style="color:#15803d;">${lnk.label}</a>`;
+    });
+    html += linkHtmlArr.join(" | ");
+    html += `</div>`;
+  }
+
+  html += `</div>`;
+
+  panel.innerHTML = html;
+  return panel;
+}
+
+// ============================================
+// PANEL INJECTION
+// ============================================
+
+async function injectWeatherPanels() {
+  const sections = document.querySelectorAll(".day-section");
+  if (!sections.length) {
+    console.warn("No .day-section elements found");
+    return;
+  }
+
+  // Insert loading skeletons
+  const placeholders = [];
+  sections.forEach((sec, idx) => {
+    if (idx < DAY_LOCATIONS.length) {
+      const ph = document.createElement("div");
+      ph.className = "weather-placeholder";
+      ph.style.cssText = "background:linear-gradient(90deg,#f0fdf4 25%,#dcfce7 50%,#f0fdf4 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin:8px 0 16px 0;min-height:80px;";
+      ph.innerHTML = `<div style="color:#999;font-style:italic;">Loading weather for ${DAY_LOCATIONS[idx].name}...</div>`;
+      const dayBody = sec.querySelector(".day-body");
+      if (dayBody) {
+        dayBody.insertBefore(ph, dayBody.firstChild);
+      } else {
+        sec.insertBefore(ph, sec.children[1] || null);
+      }
+      placeholders.push(ph);
+    }
+  });
+
+  // Add shimmer animation
+  if (!document.getElementById("weather-shimmer-style")) {
+    const style = document.createElement("style");
+    style.id = "weather-shimmer-style";
+    style.textContent = "@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }";
+    document.head.appendChild(style);
+  }
+
+  // Fetch weather for unique coords
+  const coordMap = {};
+  for (const loc of DAY_LOCATIONS) {
+    const key = `${loc.lat},${loc.lon}`;
+    if (!coordMap[key]) {
+      coordMap[key] = fetchWeather(loc.lat, loc.lon);
+    }
+  }
+
+  // Wait for all fetches
+  const keys = Object.keys(coordMap);
+  const results = await Promise.all(keys.map(k => coordMap[k]));
+  const resolvedMap = {};
+  keys.forEach((k, i) => { resolvedMap[k] = results[i]; });
+
+  // Replace placeholders with panels
+  DAY_LOCATIONS.forEach((loc, idx) => {
+    const key = `${loc.lat},${loc.lon}`;
+    const periods = resolvedMap[key];
+    const forecast = findForecast(periods, loc.date);
+    const panel = buildPanel(loc, forecast);
+
+    if (placeholders[idx] && placeholders[idx].parentNode) {
+      placeholders[idx].parentNode.replaceChild(panel, placeholders[idx]);
+    }
+  });
+}
+
+setTimeout(injectWeatherPanels, 500);
 });
 </script>
 
