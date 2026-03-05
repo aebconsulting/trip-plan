@@ -4379,7 +4379,7 @@ function enhanceRoadConditions() {
   })();
 
   // Body-appended dropdown menu with backdrop
-  (function() {{
+  (function() {
     var menuBtn = document.getElementById("mainMenuBtn");
     if (!menuBtn) return;
 
@@ -4400,19 +4400,19 @@ function enhanceRoadConditions() {
       {href: "#ref-13", label: "Packing List"}
     ];
 
-    function closeMenu() {{
+    function closeMenu() {
       var panel = document.querySelector(".menu-panel");
       var backdrop = document.querySelector(".menu-backdrop");
       if (panel) panel.remove();
       if (backdrop) backdrop.remove();
-    }}
+    }
 
-    menuBtn.addEventListener("click", function(e) {{
+    menuBtn.addEventListener("click", function(e) {
       e.stopPropagation();
-      if (document.querySelector(".menu-panel")) {{
+      if (document.querySelector(".menu-panel")) {
         closeMenu();
         return;
-      }}
+      }
 
       var backdrop = document.createElement("div");
       backdrop.className = "menu-backdrop";
@@ -4434,39 +4434,39 @@ function enhanceRoadConditions() {
       header.appendChild(closeBtn);
       panel.appendChild(header);
 
-      menuItems.forEach(function(item) {{
+      menuItems.forEach(function(item) {
         var a = document.createElement("a");
         a.href = item.href;
         a.textContent = item.label;
-        a.addEventListener("click", function(e) {{
+        a.addEventListener("click", function(e) {
           e.preventDefault();
           closeMenu();
           var targetId = item.href.replace('#', '');
           var target = document.getElementById(targetId);
-          if (target) {{
-            if (target.tagName === 'DETAILS' && !target.hasAttribute('open')) {{
+          if (target) {
+            if (target.tagName === 'DETAILS' && !target.hasAttribute('open')) {
               target.setAttribute('open', '');
-            }}
-            setTimeout(function() {{
+            }
+            setTimeout(function() {
               var navH = document.querySelector('.nav-bar') ? document.querySelector('.nav-bar').offsetHeight : 40;
               var rect = target.getBoundingClientRect();
-              window.scrollTo({{ top: window.scrollY + rect.top - navH - 8, behavior: 'smooth' }});
-            }}, 50);
-          }}
-        }});
+              window.scrollTo({ top: window.scrollY + rect.top - navH - 8, behavior: 'smooth' });
+            }, 50);
+          }
+        });
         panel.appendChild(a);
-      }});
+      });
 
       document.body.appendChild(panel);
       var btnRect = menuBtn.getBoundingClientRect();
       panel.style.top = (btnRect.bottom + 6) + "px";
       panel.style.left = Math.max(8, btnRect.left) + "px";
-    }});
+    });
 
-    document.addEventListener("keydown", function(e) {{
+    document.addEventListener("keydown", function(e) {
       if (e.key === "Escape") closeMenu();
-    }});
-  }})();
+    });
+  })();
 
 setTimeout(injectWeatherPanels, 500);
 
