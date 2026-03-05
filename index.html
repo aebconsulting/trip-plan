@@ -172,7 +172,7 @@
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.25);
-    z-index: 9998;
+    z-index: 10000;
     animation: backdropIn 0.15s ease-out;
   }
   @keyframes backdropIn {
@@ -187,7 +187,7 @@
     background: var(--cream);
     border-radius: 12px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 4px 16px rgba(0,0,0,0.1);
-    z-index: 9999;
+    z-index: 10001;
     border: 1px solid var(--border);
     padding: 0;
     animation: menuFadeIn 0.2s cubic-bezier(.4,0,.2,1);
@@ -4459,7 +4459,7 @@ function enhanceRoadConditions() {
 
       document.body.appendChild(panel);
       var btnRect = menuBtn.getBoundingClientRect();
-      panel.style.top = (btnRect.bottom + 4) + "px";
+      panel.style.top = (btnRect.bottom + 6) + "px";
       panel.style.left = Math.max(8, btnRect.left) + "px";
     }});
 
