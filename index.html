@@ -4438,8 +4438,21 @@ function enhanceRoadConditions() {
         var a = document.createElement("a");
         a.href = item.href;
         a.textContent = item.label;
-        a.addEventListener("click", function() {{
+        a.addEventListener("click", function(e) {{
+          e.preventDefault();
           closeMenu();
+          var targetId = item.href.replace('#', '');
+          var target = document.getElementById(targetId);
+          if (target) {{
+            if (target.tagName === 'DETAILS' && !target.hasAttribute('open')) {{
+              target.setAttribute('open', '');
+            }}
+            setTimeout(function() {{
+              var navH = document.querySelector('.nav-bar') ? document.querySelector('.nav-bar').offsetHeight : 40;
+              var rect = target.getBoundingClientRect();
+              window.scrollTo({{ top: window.scrollY + rect.top - navH - 8, behavior: 'smooth' }});
+            }}, 50);
+          }}
         }});
         panel.appendChild(a);
       }});
