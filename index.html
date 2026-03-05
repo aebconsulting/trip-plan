@@ -3895,12 +3895,12 @@ async function fetchWeather(lat, lon) {
   if (weatherCache[key]) return weatherCache[key];
 
   try {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,weather_code&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=16&timezone=auto`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,weather_code&hourly=precipitation_probability&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=16&timezone=auto`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Open-Meteo error: ${res.status}`);
     const data = await res.json();
-    weatherCache[key] = data.daily;
-    return data.daily;
+    weatherCache[key] = { daily: data.daily, hourly: data.hourly || null };
+    return weatherCache[key];
   } catch (err) {
     console.warn(`Weather fetch failed for ${lat},${lon}:`, err);
     return null;
@@ -3925,6 +3925,19 @@ function findForecast(daily, dateStr) {
       probabilityOfPrecipitation: { value: daily.precipitation_probability_max[idx] }
     }
   };
+}
+
+function extractHourlyPrecip(weatherData, dateStr) {
+  if (!weatherData || !weatherData.hourly || !weatherData.hourly.time) return null;
+  const hourly = weatherData.hourly;
+  const hours = [];
+  for (let i = 0; i < hourly.time.length; i++) {
+    if (hourly.time[i].startsWith(dateStr)) {
+      const hr = parseInt(hourly.time[i].substring(11, 13), 10);
+      hours.push({ hour: hr, precip: hourly.precipitation_probability[i] || 0 });
+    }
+  }
+  return hours.length > 0 ? hours : null;
 }
 
 function parseWindSpeed(windStr) {
@@ -3989,7 +4002,28 @@ function buildPanel(dayInfo, forecast) {
     html += `<div style="color:#555;">${forecastText}</div>`;
     html += `</div></div>`;
 
-    if (precipDay !== null || precipNight !== null) {
+    if (forecast.hourlyPrecip && forecast.hourlyPrecip.length > 0) {
+      const maxP = Math.max(...forecast.hourlyPrecip.map(h => h.precip), 1);
+      html += `<div style="margin-bottom:8px;">`;
+      html += `<div style="font-size:0.85em;font-weight:600;color:#1B4332;margin-bottom:4px;">💧 Hourly Precipitation Chance</div>`;
+      html += `<div style="display:flex;align-items:flex-end;gap:1px;height:48px;padding:2px 0;">`;
+      for (const h of forecast.hourlyPrecip) {
+        const barH = Math.max((h.precip / 100) * 44, 1);
+        const color = h.precip > 60 ? "#2563eb" : h.precip > 30 ? "#60a5fa" : "#93c5fd";
+        const show = (h.hour % 3 === 0);
+        const labelStr = h.hour === 0 ? "12a" : h.hour < 12 ? h.hour + "a" : h.hour === 12 ? "12p" : (h.hour - 12) + "p";
+        html += `<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">`;
+        html += `<div style="width:100%;max-width:14px;height:${barH}px;background:${color};border-radius:2px 2px 0 0;margin:0 auto;" title="${labelStr}: ${h.precip}%"></div>`;
+        if (show) {
+          html += `<span style="font-size:0.55em;color:#888;margin-top:1px;white-space:nowrap;">${labelStr}</span>`;
+        }
+        html += `</div>`;
+      }
+      html += `</div>`;
+      const overallMax = Math.max(...forecast.hourlyPrecip.map(h => h.precip));
+      html += `<div style="font-size:0.75em;color:#666;margin-top:2px;">Peak: ${overallMax}%</div>`;
+      html += `</div>`;
+    } else if (precipDay !== null || precipNight !== null) {
       const pDay = precipDay !== null ? precipDay : "--";
       const pNight = precipNight !== null ? precipNight : "--";
       html += `<div style="font-size:0.9em;color:#555;margin-bottom:4px;">💧 Precip: ${pDay}% day / ${pNight}% night</div>`;
@@ -4117,8 +4151,10 @@ async function injectWeatherPanels() {
   // Replace placeholders with panels
   DAY_LOCATIONS.forEach((loc, idx) => {
     const key = `${loc.lat},${loc.lon}`;
-    const periods = resolvedMap[key];
+    const weatherData = resolvedMap[key];
+    const periods = weatherData ? weatherData.daily : null;
     const forecast = findForecast(periods, loc.date);
+    forecast.hourlyPrecip = extractHourlyPrecip(weatherData, loc.date);
     const panel = buildPanel(loc, forecast);
 
     if (placeholders[idx] && placeholders[idx].parentNode) {
