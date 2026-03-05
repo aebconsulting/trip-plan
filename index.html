@@ -108,14 +108,13 @@
     background: rgba(246,241,233,0.88);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
-    padding: 10px 0;
+    padding: 8px 10px;
     border-bottom: 2px solid var(--border);
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 2px;
   }
-  .nav-bar::-webkit-scrollbar { display: none; }
 
   .nav-bar a {
     display: inline-block;
@@ -139,18 +138,12 @@
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
   }
-  .nav-group { display: inline; }
-  .nav-group::before {
-    content: '';
-    display: inline-block;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--terracotta);
-    vertical-align: middle;
-    margin: 0 6px;
+  .nav-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 3px;
   }
-  .nav-group:first-child::before { display: none; }
 
   /* Dropdown menu */
   .menu-btn {
@@ -177,7 +170,7 @@
   .menu-panel {
     position: fixed;
     top: 52px;
-    right: 12px;
+    left: 12px;
     min-width: 280px;
     max-width: 320px;
     max-height: 70vh;
@@ -941,7 +934,8 @@
 
   @media (max-width: 400px) {
     .hero h1 { font-size: 1.3em; }
-    .nav-bar a { font-size: 0.72em; padding: 4px 10px; }
+    .nav-bar a { font-size: 0.72em; padding: 4px 8px; }
+    .menu-btn { font-size: 0.72em; padding: 4px 10px; }
     .day-header { flex-wrap: wrap; }
   }
 
@@ -962,6 +956,7 @@
 <body>
 
 <div class="nav-bar" id="top">
+  <button class="menu-btn" id="mainMenuBtn" aria-label="Menu">☰ Menu</button>
   <span class="nav-group">
     <a href="#day-1">Day 1</a>
     <a href="#day-2">Day 2</a>
@@ -975,9 +970,6 @@
     <a href="#day-10">Day 10</a>
     <a href="#day-11">Day 11</a>
     <a href="#day-12">Day 12</a>
-  </span>
-  <span class="nav-group">
-    <button class="menu-btn" id="mainMenuBtn" aria-label="Menu">☰ Menu</button>
   </span>
 </div>
 
