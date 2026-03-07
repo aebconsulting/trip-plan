@@ -166,7 +166,7 @@ html_doc = f"""<!DOCTYPE html>
   /* ===== RESET & BASE ===== */
   *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
 
-  html {{ scroll-behavior: smooth; }}
+  html {{ scroll-behavior: smooth; scroll-padding-top: 90px; }}
 
   body {{
     font-family: 'Outfit', system-ui, sans-serif;
@@ -201,7 +201,7 @@ html_doc = f"""<!DOCTYPE html>
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     padding: 6px 12px;
-    border-bottom: 1.5px solid var(--border);
+    border-bottom: none;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -292,11 +292,13 @@ html_doc = f"""<!DOCTYPE html>
   .countdown-banner {{
     position: sticky;
     top: 44px;
-    z-index: 999;
+    z-index: 99;
     text-align: center;
     padding: 10px 20px;
+    margin: 0;
     background: linear-gradient(135deg, #1a3a2a, #2d5a3d);
     border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-top: none;
     color: var(--cream);
     font-family: 'Outfit', sans-serif;
     font-size: 1.05em;
@@ -2251,7 +2253,7 @@ function enhanceRoadConditions() {{
               target.setAttribute('open', '');
             }}
             setTimeout(function() {{
-              var navH = document.querySelector('.nav-bar') ? document.querySelector('.nav-bar').offsetHeight : 40;
+              var navH = (document.querySelector('.nav-bar') ? document.querySelector('.nav-bar').offsetHeight : 40) + (document.querySelector('.countdown-banner') ? document.querySelector('.countdown-banner').offsetHeight : 0);
               var rect = target.getBoundingClientRect();
               window.scrollTo({{ top: window.scrollY + rect.top - navH - 8, behavior: 'smooth' }});
             }}, 50);
@@ -2337,6 +2339,17 @@ document.addEventListener('DOMContentLoaded', function() {{
   }}
   update();
   setInterval(update, 60000);
+
+  // Sync banner top position with actual nav height
+  var nav = document.querySelector('.nav-bar');
+  if (nav && el) {{
+    function syncTop() {{
+      el.style.top = nav.offsetHeight + 'px';
+    }}
+    syncTop();
+    window.addEventListener('resize', syncTop);
+  }}
+
 }})();
 </script>
 </body>
