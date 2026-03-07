@@ -1,0 +1,68 @@
+"""
+fix_dropdown_menu.py
+Modifies create_html.py to add a dropdown menu button in the sticky nav bar
+for all reference/context sections.
+"""
+
+import sys
+import base64
+
+FILE_PATH = "C:/Users/AB Digial/OneDrive/Documents/Claude/create_html.py"
+
+def d(b64str):
+    return base64.b64decode(b64str).decode("utf-8")
+
+def main():
+    with open(FILE_PATH, "r", encoding="utf-8") as f:
+        content = f.read()
+    original = content
+    changes_made = 0
+
+    # CHANGE 1: Replace static reference links with dropdown menu
+    old_nav = d("ICA8c3BhbiBjbGFzcz0ibmF2LWdyb3VwIj4KICAgIDxhIGhyZWY9IiNzY291dGluZyI+U2NvdXRpbmc8L2E+CiAgICA8YSBocmVmPSIjbG9kZ2luZyI+TG9kZ2luZzwvYT4KICAgIDxhIGhyZWY9IiNib29raW5nIj5DaGVja2xpc3Q8L2E+CiAgPC9zcGFuPg==")
+    new_nav = d("ICA8c3BhbiBjbGFzcz0ibmF2LWdyb3VwIj4KICAgIDxkaXYgY2xhc3M9Im1lbnUtZHJvcGRvd24iPgogICAgICA8YnV0dG9uIGNsYXNzPSJtZW51LWJ0biIgb25jbGljaz0idGhpcy5wYXJlbnRFbGVtZW50LmNsYXNzTGlzdC50b2dnbGUoJ29wZW4nKSIgYXJpYS1sYWJlbD0iTWVudSI+4piwIE1lbnU8L2J1dHRvbj4KICAgICAgPGRpdiBjbGFzcz0ibWVudS1wYW5lbCI+CiAgICAgICAgPGRpdiBjbGFzcz0ibWVudS1wYW5lbC1oZWFkZXIiPlJlZmVyZW5jZSAmYW1wOyBQbGFubmluZzwvZGl2PgogICAgICAgIDxhIGhyZWY9IiNyZWYtMCIgb25jbGljaz0idGhpcy5jbG9zZXN0KCcubWVudS1kcm9wZG93bicpLmNsYXNzTGlzdC5yZW1vdmUoJ29wZW4nKSI+8J+UgCBGbGV4aWJpbGl0eSBHdWlkZTwvYT4KICAgICAgICA8YSBocmVmPSIjcmVmLTEiIG9uY2xpY2s9InRoaXMuY2xvc2VzdCgnLm1lbnUtZHJvcGRvd24nKS5jbGFzc0xpc3QucmVtb3ZlKCdvcGVuJykiPvCfk4UgRXZlbnRzIENhbGVuZGFyPC9hPgogICAgICAgIDxhIGhyZWY9IiNyZWYtMiIgb25jbGljaz0idGhpcy5jbG9zZXN0KCcubWVudS1kcm9wZG93bicpLmNsYXNzTGlzdC5yZW1vdmUoJ29wZW4nKSI+8J+TiyBCb29raW5nIENoZWNrbGlzdDwvYT4KICAgICAgICA8YSBocmVmPSIjcmVmLTMiIG9uY2xpY2s9InRoaXMuY2xvc2VzdCgnLm1lbnUtZHJvcGRvd24nKS5jbGFzc0xpc3QucmVtb3ZlKCdvcGVuJykiPvCfmqcgUm9hZCBDb25kaXRpb25zPC9hPgogICAgICAgIDxhIGhyZWY9IiNyZWYtNCIgb25jbGljaz0idGhpcy5jbG9zZXN0KCcubWVudS1kcm9wZG93bicpLmNsYXNzTGlzdC5yZW1vdmUoJ29wZW4nKSI+8J+Xuu+4jyBEcml2aW5nIFN1bW1hcnk8L2E+CiAgICAgICAgPGEgaHJlZj0iI3JlZi01IiBvbmNsaWNrPSJ0aGlzLmNsb3Nlc3QoJy5tZW51LWRyb3Bkb3duJykuY2xhc3NMaXN0LnJlbW92ZSgnb3BlbicpIj7wn4+gIExvZGdpbmcgR3VpZGU8L2E+CiAgICAgICAgPGEgaHJlZj0iI3JlZi02IiBvbmNsaWNrPSJ0aGlzLmNsb3Nlc3QoJy5tZW51LWRyb3Bkb3duJykuY2xhc3NMaXN0LnJlbW92ZSgnb3BlbicpIj7wn4+U77iPIExhbmQgU2NvdXRpbmc8L2E+CiAgICAgICAgPGEgaHJlZj0iI3JlZi03IiBvbmNsaWNrPSJ0aGlzLmNsb3Nlc3QoJy5tZW51LWRyb3Bkb3duJykuY2xhc3NMaXN0LnJlbW92ZSgnb3BlbicpIj7wn5ONIFNjb3V0aW5nIFN1bW1hcnk8L2E+CiAgICAgICAgPGEgaHJlZj0iI3JlZi04IiBvbmNsaWNrPSJ0aGlzLmNsb3Nlc3QoJy5tZW51LWRyb3Bkb3duJykuY2xhc3NMaXN0LnJlbW92ZSgnb3BlbicpIj7wn5ONIENvbnRleHQ8L2E+CiAgICAgICAgPGEgaHJlZj0iI3JlZi05IiBvbmNsaWNrPSJ0aGlzLmNsb3Nlc3QoJy5tZW51LWRyb3Bkb3duJykuY2xhc3NMaXN0LnJlbW92ZSgnb3BlbicpIj7wn5uSIENvc3RjbyBMb2NhdGlvbnM8L2E+CiAgICAgICAgPGEgaHJlZj0iI3JlZi0xMCIgb25jbGljaz0idGhpcy5jbG9zZXN0KCcubWVudS1kcm9wZG93bicpLmNsYXNzTGlzdC5yZW1vdmUoJ29wZW4nKSI+8J+alyBWZWhpY2xlIE5vdGVzPC9hPgogICAgICAgIDxhIGhyZWY9IiNyZWYtMTEiIG9uY2xpY2s9InRoaXMuY2xvc2VzdCgnLm1lbnUtZHJvcGRvd24nKS5jbGFzc0xpc3QucmVtb3ZlKCdvcGVuJykiPvCfpocgSG9ycm9yICZhbXA7IFNwb29reSBTaG9wczwvYT4KICAgICAgICA8YSBocmVmPSIjcmVmLTEyIiBvbmNsaWNrPSJ0aGlzLmNsb3Nlc3QoJy5tZW51LWRyb3Bkb3duJykuY2xhc3NMaXN0LnJlbW92ZSgnb3BlbicpIj7wn46uIEtpZC1GcmllbmRseSBBY3Rpdml0aWVzPC9hPgogICAgICAgIDxhIGhyZWY9IiNyZWYtMTMiIG9uY2xpY2s9InRoaXMuY2xvc2VzdCgnLm1lbnUtZHJvcGRvd24nKS5jbGFzc0xpc3QucmVtb3ZlKCdvcGVuJykiPvCfp7MgUGFja2luZyBMaXN0PC9hPgogICAgICA8L2Rpdj4KICAgIDwvZGl2PgogIDwvc3Bhbj4=")
+
+    if old_nav in content:
+        content = content.replace(old_nav, new_nav, 1)
+        changes_made += 1
+        print("CHANGE 1: Replaced static reference links with dropdown menu - OK")
+    else:
+        print("ERROR: Could not find the static reference links in nav-bar.")
+        sys.exit(1)
+
+    # CHANGE 2: Add CSS for dropdown menu
+    css_anchor = d("ICAubmF2LWdyb3VwOmZpcnN0LWNoaWxkOjpiZWZvcmUge3sgZGlzcGxheTogbm9uZTsgfX0=")
+    dropdown_css = d("ICAubmF2LWdyb3VwOmZpcnN0LWNoaWxkOjpiZWZvcmUge3sgZGlzcGxheTogbm9uZTsgfX0KCiAgLyogRHJvcGRvd24gbWVudSAqLwogIC5tZW51LWRyb3Bkb3duIHt7CiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7CiAgICBwb3NpdGlvbjogcmVsYXRpdmU7CiAgfX0KICAubWVudS1idG4ge3sKICAgIGRpc3BsYXk6IGlubGluZS1ibG9jazsKICAgIHBhZGRpbmc6IDVweCAxNHB4OwogICAgbWFyZ2luOiAycHggM3B4OwogICAgYm9yZGVyLXJhZGl1czogMTAwcHg7CiAgICBiYWNrZ3JvdW5kOiB2YXIoLS1mb3Jlc3QpOwogICAgY29sb3I6IHZhcigtLWNyZWFtKTsKICAgIGZvbnQtZmFtaWx5OiAnT3V0Zml0Jywgc2Fucy1zZXJpZjsKICAgIGZvbnQtc2l6ZTogMC43OGVtOwogICAgZm9udC13ZWlnaHQ6IDYwMDsKICAgIGJvcmRlcjogMS41cHggc29saWQgdmFyKC0tZm9yZXN0KTsKICAgIGN1cnNvcjogcG9pbnRlcjsKICAgIGxldHRlci1zcGFjaW5nOiAwLjAyZW07CiAgICB0cmFuc2l0aW9uOiBhbGwgMC4yNXMgY3ViaWMtYmV6aWVyKC40LDAsLjIsMSk7CiAgfX0KICAubWVudS1idG46aG92ZXIge3sKICAgIGJhY2tncm91bmQ6IHZhcigtLWZvcmVzdC1taWQpOwogICAgYm9yZGVyLWNvbG9yOiB2YXIoLS1mb3Jlc3QtbWlkKTsKICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWSgtMXB4KTsKICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1zbSk7CiAgfX0KICAubWVudS1wYW5lbCB7ewogICAgZGlzcGxheTogbm9uZTsKICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTsKICAgIHRvcDogY2FsYygxMDAlICsgOHB4KTsKICAgIHJpZ2h0OiAwOwogICAgbWluLXdpZHRoOiAyNjBweDsKICAgIG1heC1oZWlnaHQ6IDcwdmg7CiAgICBvdmVyZmxvdy15OiBhdXRvOwogICAgYmFja2dyb3VuZDogd2hpdGU7CiAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1yYWRpdXMtbGcpOwogICAgYm94LXNoYWRvdzogMCAxMnB4IDQwcHggcmdiYSgwLDAsMCwwLjE1KSwgMCA0cHggMTJweCByZ2JhKDAsMCwwLDAuMDgpOwogICAgei1pbmRleDogMjAwOwogICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tYm9yZGVyKTsKICAgIHBhZGRpbmc6IDZweCAwOwogIH19CiAgLm1lbnUtZHJvcGRvd24ub3BlbiAubWVudS1wYW5lbCB7ewogICAgZGlzcGxheTogYmxvY2s7CiAgICBhbmltYXRpb246IG1lbnVGYWRlSW4gMC4ycyBlYXNlLW91dDsKICB9fQogIEBrZXlmcmFtZXMgbWVudUZhZGVJbiB7ewogICAgZnJvbSB7eyBvcGFjaXR5OiAwOyB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoLThweCk7IH19CiAgICB0byB7eyBvcGFjaXR5OiAxOyB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoMCk7IH19CiAgfX0KICAubWVudS1wYW5lbC1oZWFkZXIge3sKICAgIHBhZGRpbmc6IDEwcHggMTZweCA4cHggMTZweDsKICAgIGZvbnQtZmFtaWx5OiAnRnJhdW5jZXMnLCBzZXJpZjsKICAgIGZvbnQtc2l6ZTogMC45ZW07CiAgICBmb250LXdlaWdodDogNzAwOwogICAgY29sb3I6IHZhcigtLWZvcmVzdCk7CiAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgdmFyKC0tYm9yZGVyKTsKICAgIG1hcmdpbi1ib3R0b206IDRweDsKICB9fQogIC5tZW51LXBhbmVsIGEge3sKICAgIGRpc3BsYXk6IGJsb2NrOwogICAgcGFkZGluZzogOHB4IDE2cHg7CiAgICBmb250LWZhbWlseTogJ091dGZpdCcsIHNhbnMtc2VyaWY7CiAgICBmb250LXNpemU6IDAuODJlbTsKICAgIGNvbG9yOiB2YXIoLS10ZXh0KTsKICAgIHRleHQtZGVjb3JhdGlvbjogbm9uZTsKICAgIHRyYW5zaXRpb246IGJhY2tncm91bmQgMC4xNXM7CiAgICBib3JkZXItcmFkaXVzOiAwOwogICAgYm9yZGVyOiBub25lOwogICAgbWFyZ2luOiAwOwogICAgYmFja2dyb3VuZDogdHJhbnNwYXJlbnQ7CiAgfX0KICAubWVudS1wYW5lbCBhOmhvdmVyIHt7CiAgICBiYWNrZ3JvdW5kOiAjZjBmZGY0OwogICAgY29sb3I6IHZhcigtLWZvcmVzdCk7CiAgICB0cmFuc2Zvcm06IG5vbmU7CiAgICBib3gtc2hhZG93OiBub25lOwogIH19")
+
+    if css_anchor in content:
+        content = content.replace(css_anchor, dropdown_css, 1)
+        changes_made += 1
+        print("CHANGE 2: Added dropdown menu CSS - OK")
+    else:
+        print("ERROR: Could not find CSS anchor.")
+        sys.exit(1)
+
+    # CHANGE 3: Add JS to close dropdown when clicking outside
+    js_anchor = d("c2V0VGltZW91dChpbmplY3RXZWF0aGVyUGFuZWxzLCA1MDApOw==")
+    js_new = d("ICAvLyBDbG9zZSBtZW51IHdoZW4gY2xpY2tpbmcgb3V0c2lkZQogIGRvY3VtZW50LmFkZEV2ZW50TGlzdGVuZXIoJ2NsaWNrJywgZnVuY3Rpb24oZSkge3sKICAgIGNvbnN0IGRyb3Bkb3duID0gZG9jdW1lbnQucXVlcnlTZWxlY3RvcignLm1lbnUtZHJvcGRvd24nKTsKICAgIGlmIChkcm9wZG93biAmJiAhZHJvcGRvd24uY29udGFpbnMoZS50YXJnZXQpKSB7ewogICAgICBkcm9wZG93bi5jbGFzc0xpc3QucmVtb3ZlKCdvcGVuJyk7CiAgICB9fQogIH19KTsKCnNldFRpbWVvdXQoaW5qZWN0V2VhdGhlclBhbmVscywgNTAwKTs=")
+
+    if js_anchor in content:
+        content = content.replace(js_anchor, js_new, 1)
+        changes_made += 1
+        print("CHANGE 3: Added click-outside JS handler - OK")
+    else:
+        print("ERROR: Could not find JS anchor.")
+        sys.exit(1)
+
+    if content == original:
+        print("ERROR: No changes were made.")
+        sys.exit(1)
+
+    with open(FILE_PATH, "w", encoding="utf-8") as f:
+        f.write(content)
+
+    print()
+    print(f"SUCCESS: All {changes_made} changes applied to create_html.py")
+
+if __name__ == "__main__":
+    main()
