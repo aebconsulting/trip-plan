@@ -137,7 +137,7 @@ Weaverville is only ~10 min north of Asheville on US-19 — pop up anytime for a
 ## Day 2 — Wednesday, March 12th: Savannah → Asheville
 **Savannah, GA → Asheville, NC** (~333 mi with stops, ~5.5 hrs driving)
 
-**📍 Route & Distances:** [Day 2 Google Map](https://www.google.com/maps/dir/199+East+Bay+St,+Savannah,+GA+31401/330+Bonaventure+Rd,+Savannah,+GA/10+Hub+St,+Greenville,+SC+29601/1101+Forest+Retreat+Rd,+Hendersonville,+NC/35.612841,-82.665031)
+**📍 Route & Distances:** [Day 2 Google Map](https://www.google.com/maps/dir/199+East+Bay+St,+Savannah,+GA+31401/330+Bonaventure+Rd,+Savannah,+GA/10+Hub+St,+Greenville,+SC+29601/Costco,+1101+Forest+Retreat+Rd,+Hendersonville,+NC+28792/35.612841,-82.665031)
 | # | Segment | Miles | Drive Time | Route |
 |---|---------|-------|------------|-------|
 | 1 | Hotel → Bonaventure Cemetery | ~5 mi | ~12 min | Local roads east |
@@ -891,7 +891,7 @@ Your ideal property: **bench land or ridgeline with natural springs or spring-fe
 | Day | Route | Miles | Drive Time | Map |
 |---|---|---|---|---|
 | Day 1 | Tamarac → Savannah | ~461 mi | ~7 hr 0 min | [Map](https://www.google.com/maps/dir/6491+NW+89th+Ave,+Tamarac,+FL+33321/Jacksonville,+FL/Brunswick,+GA/199+East+Bay+Street,+Savannah,+GA+31401) |
-| Day 2 | Savannah → Greenville (10 Hub St) → Asheville | ~333 mi | ~5 hr 30 min + 1–2 hr stop | [Map](https://www.google.com/maps/dir/199+East+Bay+St,+Savannah,+GA+31401/330+Bonaventure+Rd,+Savannah,+GA/10+Hub+St,+Greenville,+SC+29601/1101+Forest+Retreat+Rd,+Hendersonville,+NC/35.612841,-82.665031) |
+| Day 2 | Savannah → Greenville (10 Hub St) → Asheville | ~333 mi | ~5 hr 30 min + 1–2 hr stop | [Map](https://www.google.com/maps/dir/199+East+Bay+St,+Savannah,+GA+31401/330+Bonaventure+Rd,+Savannah,+GA/10+Hub+St,+Greenville,+SC+29601/Costco,+1101+Forest+Retreat+Rd,+Hendersonville,+NC+28792/35.612841,-82.665031) |
 | Day 3 | Asheville sightseeing (Friday the 13th) | ~44 mi | ~1 hr 22 min | [Map](https://www.google.com/maps/dir/35.612841,-82.665031/100+Frederick+Law+Olmsted+Way,+Asheville,+NC/43+Patton+Ave,+Asheville,+NC/841+Haywood+Rd,+Asheville,+NC/12+Old+Charlotte+Hwy,+Asheville,+NC/35.612841,-82.665031) |
 | Day 4 | Hendersonville & Flat Rock loop | ~70 mi | ~1 hr 30 min | [Map](https://www.google.com/maps/dir/35.612841,-82.665031/81+Carl+Sandburg+Ln,+Flat+Rock,+NC/2695+Sugarloaf+Rd,+Hendersonville,+NC/400+N+Main+St,+Hendersonville,+NC/35.612841,-82.665031) |
 | Day 5 | Biltmore + downtown evening | ~29 mi | ~48 min | [Map](https://www.google.com/maps/dir/35.612841,-82.665031/1+Lodge+St,+Asheville,+NC/76+Biltmore+Ave,+Asheville,+NC/35.612841,-82.665031) |
