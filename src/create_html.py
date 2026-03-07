@@ -1950,16 +1950,8 @@ function buildPanel(dayInfo, forecast) {{
 
   html += `</div>`;
 
-  // Forecast confidence + source attribution
-  var conf = getConfidence(dateStr, forecast.tempSpread || null);
-  html += `<div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:0.75em;color:#999;">`;
-  html += `<div style="display:flex;align-items:center;gap:6px;">`;
-  html += `<span style="font-weight:600;color:${{conf.color}};">`;
-  html += `${{conf.score}}% confidence</span>`;
-  html += `<span style="color:#bbb;">· ${{conf.label}} (${{conf.daysOut}}d out)</span>`;
-  html += `</div>`;
-  html += `<div>GFS + ECMWF blend via <a href=\"https://open-meteo.com\" target=\"_blank\" style=\"color:#999;\">Open-Meteo</a></div>`;
-  html += `</div>`;
+  // Forecast source attribution
+  html += `<div style="margin-top:8px;font-size:0.72em;color:#999;text-align:right;">GFS + ECMWF blend via <a href=\"https://open-meteo.com\" target=\"_blank\" style=\"color:#999;\">Open-Meteo</a></div>`;
 
   panel.innerHTML = html;
   return panel;
