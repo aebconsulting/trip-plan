@@ -1302,7 +1302,7 @@ Dark &amp; Deviant Oddities, Raven &amp; Crone, L.O.F.T., and House of Black Cat
 <h2 id="day-2">Day 2 — Wednesday, March 12th: Savannah → Asheville</h2>
 <p><strong>Savannah, GA → Asheville, NC</strong> (~333 mi with stops, ~5.5 hrs driving)</p>
 <p>🏡 <strong>Lodging:</strong> Barefoot Lodge at Dix Creek (Candler) — <a href="https://www.vrbo.com/2185348">VRBO Property &amp; Check-in</a> | 📞 <a href="tel:8772283145">(877) 228-3145</a></p>
-<p><strong>📍 Route &amp; Distances:</strong> <a href="https://www.google.com/maps/dir/199+East+Bay+St,+Savannah,+GA+31401/330+Bonaventure+Rd,+Savannah,+GA/10+Hub+St,+Greenville,+SC+29601/Costco,+1101+Forest+Retreat+Rd,+Hendersonville,+NC+28792/35.612841,-82.665031">Day 2 Google Map</a></p>
+<p><strong>📍 Route &amp; Distances:</strong> <a href="https://www.google.com/maps/dir/199+East+Bay+St,+Savannah,+GA+31401/330+Bonaventure+Rd,+Savannah,+GA/10+Hub+St,+Greenville,+SC+29601/1101+Forest+Retreat+Rd,+Hendersonville,+NC/35.612841,-82.665031">Day 2 Google Map</a></p>
 <table>
 <thead>
 <tr>
@@ -3308,7 +3308,7 @@ This is a direct tension with your goal of land near a stream. Here&rsquo;s how 
 <td>Savannah → Greenville (10 Hub St) → Asheville</td>
 <td>~333 mi</td>
 <td>~5 hr 30 min + 1–2 hr stop</td>
-<td><a href="https://www.google.com/maps/dir/199+East+Bay+St,+Savannah,+GA+31401/330+Bonaventure+Rd,+Savannah,+GA/10+Hub+St,+Greenville,+SC+29601/Costco,+1101+Forest+Retreat+Rd,+Hendersonville,+NC+28792/35.612841,-82.665031">Map</a></td>
+<td><a href="https://www.google.com/maps/dir/199+East+Bay+St,+Savannah,+GA+31401/330+Bonaventure+Rd,+Savannah,+GA/10+Hub+St,+Greenville,+SC+29601/1101+Forest+Retreat+Rd,+Hendersonville,+NC/35.612841,-82.665031">Map</a></td>
 </tr>
 <tr>
 <td>Day 3</td>
@@ -4200,10 +4200,13 @@ function parseWindSpeed(windStr) {
 
 
 function getConfidence(dateStr, tempSpread) {
-  var today = new Date();
-  today.setHours(0,0,0,0);
-  var target = new Date(dateStr + 'T00:00:00');
-  var daysOut = Math.round((target - today) / 86400000);
+  // Use Eastern Time for day calculations
+  var eastern = new Date(new Date().toLocaleString('en-US', {timeZone: 'America/New_York'}));
+  eastern.setHours(0,0,0,0);
+  var parts = dateStr.split('-');
+  var target = new Date(parts[0], parts[1] - 1, parts[2]);
+  target.setHours(0,0,0,0);
+  var daysOut = Math.round((target - eastern) / 86400000);
 
   // Base confidence from days out (meteorological accuracy curve)
   var base;
@@ -4774,15 +4777,19 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script>
-// Trip countdown
+// Trip countdown (Eastern Time)
 (function() {
-  var tripStart = new Date('2026-03-11T00:00:00');
-  var tripEnd = new Date('2026-03-22T23:59:59');
+  function easternNow() {
+    return new Date(new Date().toLocaleString('en-US', {timeZone: 'America/New_York'}));
+  }
+  // Trip dates in Eastern Time (March 11-22 is EDT, UTC-4)
+  var tripStart = new Date('2026-03-11T00:00:00-04:00');
+  var tripEnd = new Date('2026-03-22T23:59:59-04:00');
   var el = document.getElementById('trip-countdown');
   if (!el) return;
 
   function update() {
-    var now = new Date();
+    var now = easternNow();
     if (now < tripStart) {
       var diff = tripStart - now;
       var days = Math.floor(diff / 86400000);

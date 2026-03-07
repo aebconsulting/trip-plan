@@ -1782,10 +1782,13 @@ function parseWindSpeed(windStr) {{
 
 
 function getConfidence(dateStr, tempSpread) {{
-  var today = new Date();
-  today.setHours(0,0,0,0);
-  var target = new Date(dateStr + 'T00:00:00');
-  var daysOut = Math.round((target - today) / 86400000);
+  // Use Eastern Time for day calculations
+  var eastern = new Date(new Date().toLocaleString('en-US', {{timeZone: 'America/New_York'}}));
+  eastern.setHours(0,0,0,0);
+  var parts = dateStr.split('-');
+  var target = new Date(parts[0], parts[1] - 1, parts[2]);
+  target.setHours(0,0,0,0);
+  var daysOut = Math.round((target - eastern) / 86400000);
 
   // Base confidence from days out (meteorological accuracy curve)
   var base;
@@ -2356,15 +2359,19 @@ document.addEventListener('DOMContentLoaded', function() {{
 </script>
 
 <script>
-// Trip countdown
+// Trip countdown (Eastern Time)
 (function() {{
-  var tripStart = new Date('2026-03-11T00:00:00');
-  var tripEnd = new Date('2026-03-22T23:59:59');
+  function easternNow() {{
+    return new Date(new Date().toLocaleString('en-US', {{timeZone: 'America/New_York'}}));
+  }}
+  // Trip dates in Eastern Time (March 11-22 is EDT, UTC-4)
+  var tripStart = new Date('2026-03-11T00:00:00-04:00');
+  var tripEnd = new Date('2026-03-22T23:59:59-04:00');
   var el = document.getElementById('trip-countdown');
   if (!el) return;
 
   function update() {{
-    var now = new Date();
+    var now = easternNow();
     if (now < tripStart) {{
       var diff = tripStart - now;
       var days = Math.floor(diff / 86400000);
