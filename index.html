@@ -197,31 +197,36 @@
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
 
-  .countdown-badge {
-    display: block;
-    margin: 14px auto 0;
-    padding: 0;
-    background: none;
-    border: none;
-    color: rgba(255,255,255,0.7);
+  .countdown-banner {
+    position: sticky;
+    top: 44px;
+    z-index: 999;
+    text-align: center;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #1a3a2a, #2d5a3d);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: var(--cream);
     font-family: 'Outfit', sans-serif;
-    font-size: 0.82em;
-    font-weight: 400;
+    font-size: 1.05em;
+    font-weight: 500;
     letter-spacing: 0.3px;
-    position: relative;
-    z-index: 1;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   }
-  .countdown-badge .count-num {
+  .countdown-banner .count-num {
     font-family: 'JetBrains Mono', monospace;
-    font-weight: 600;
-    font-size: 1.1em;
-    color: #fde68a;
+    font-weight: 700;
+    font-size: 1.2em;
+    color: #fbbf24;
   }
-  .countdown-badge.trip-active .count-num {
-    color: #86efac;
+  .countdown-banner.trip-active {
+    background: linear-gradient(135deg, #14532d, #166534);
   }
-  .countdown-badge.trip-over {
-    opacity: 0.6;
+  .countdown-banner.trip-active .count-num {
+    color: #4ade80;
+  }
+  .countdown-banner.trip-over {
+    background: linear-gradient(135deg, #44403c, #57534e);
+    font-size: 0.95em;
   }
 
 
@@ -1033,6 +1038,8 @@
   <a href="#day-12">12</a>
 </div>
 
+<div class="countdown-banner" id="trip-countdown"></div>
+
 <div class="hero">
   <svg class="hero-mountains" viewBox="0 0 1200 80" preserveAspectRatio="none" style="position:absolute;bottom:0;left:0;right:0;">
     <path d="M0,80 L0,55 Q60,35 120,50 Q200,25 280,42 Q340,15 400,38 Q480,8 560,32 Q620,18 700,28 Q760,12 840,35 Q920,5 1000,30 Q1060,18 1120,38 Q1160,28 1200,45 L1200,80 Z" fill="rgba(0,0,0,0.12)"/>
@@ -1045,7 +1052,6 @@
     March 11&ndash;22, 2026
   </div>
   <span class="route-badge">~2,250 mi &bull; Family of 3 &bull; Toyota Crown</span>
-  <div class="countdown-badge" id="trip-countdown"></div>
 </div>
 
 <h1>12-Day Family Road Trip: Tamarac, FL → Savannah → NC Mountains → Home</h1>
@@ -4740,10 +4746,10 @@ document.addEventListener('DOMContentLoaded', function() {
     } else if (now <= tripEnd) {
       var dayNum = Math.floor((now - tripStart) / 86400000) + 1;
       var daysLeft = 12 - dayNum;
-      el.className = 'countdown-badge trip-active';
+      el.className = 'countdown-banner trip-active';
       el.innerHTML = '🚗 Day <span class="count-num">' + dayNum + '</span> of 12 — ' + (daysLeft > 0 ? daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' remaining' : 'Final day!');
     } else {
-      el.className = 'countdown-badge trip-over';
+      el.className = 'countdown-banner trip-over';
       el.innerHTML = 'Trip complete — what an adventure!';
     }
   }
