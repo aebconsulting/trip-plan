@@ -1686,7 +1686,8 @@ function blendModels(d) {{
     temperature_2m_min: [],
     precipitation_probability_max: [],
     wind_speed_10m_max: [],
-    weather_code: []
+    weather_code: [],
+    temp_spread: []
   }};
 
   for (let i = 0; i < d.time.length; i++) {{
@@ -1707,24 +1708,28 @@ function blendModels(d) {{
       result.precipitation_probability_max.push(Math.max(bmPrecip || 0, ecPrecip || 0));
       result.wind_speed_10m_max.push((bmWind + ecWind) / 2);
       result.weather_code.push(bmCode != null ? bmCode : ecHigh);
+      result.temp_spread.push(Math.abs(bmHigh - ecHigh));
     }} else if (bmHigh != null) {{
       result.temperature_2m_max.push(bmHigh);
       result.temperature_2m_min.push(bmLow);
       result.precipitation_probability_max.push(bmPrecip);
       result.wind_speed_10m_max.push(bmWind);
       result.weather_code.push(bmCode);
+      result.temp_spread.push(0);
     }} else if (ecHigh != null) {{
       result.temperature_2m_max.push(ecHigh);
       result.temperature_2m_min.push(ecLow);
       result.precipitation_probability_max.push(ecPrecip);
       result.wind_speed_10m_max.push(ecWind);
       result.weather_code.push(d.weather_code_ecmwf_ifs025 ? d.weather_code_ecmwf_ifs025[i] : 2);
+      result.temp_spread.push(0);
     }} else {{
       result.temperature_2m_max.push(null);
       result.temperature_2m_min.push(null);
       result.precipitation_probability_max.push(null);
       result.wind_speed_10m_max.push(null);
       result.weather_code.push(null);
+      result.temp_spread.push(0);
     }}
   }}
 
@@ -1734,7 +1739,9 @@ function findForecast(daily, dateStr) {{
   if (!daily || !daily.time) return {{ day: null, night: null }};
   const idx = daily.time.indexOf(dateStr);
   if (idx === -1) return {{ day: null, night: null }};
+  var spread = daily.temp_spread ? daily.temp_spread[idx] : null;
   return {{
+    tempSpread: spread,
     day: {{
       temperature: Math.round(daily.temperature_2m_max[idx]),
       shortForecast: wmoCodeToText(daily.weather_code[idx]),
@@ -1772,6 +1779,41 @@ function parseWindSpeed(windStr) {{
 // ============================================
 // PANEL BUILDER
 // ============================================
+
+
+function getConfidence(dateStr, tempSpread) {{
+  var today = new Date();
+  today.setHours(0,0,0,0);
+  var target = new Date(dateStr + 'T00:00:00');
+  var daysOut = Math.round((target - today) / 86400000);
+
+  // Base confidence from days out (meteorological accuracy curve)
+  var base;
+  if (daysOut <= 1) base = 95;
+  else if (daysOut <= 3) base = 90;
+  else if (daysOut <= 5) base = 80;
+  else if (daysOut <= 7) base = 68;
+  else if (daysOut <= 10) base = 55;
+  else if (daysOut <= 14) base = 38;
+  else base = 25;
+
+  // Adjust for model agreement (temp spread penalty)
+  // If models diverge > 5F, reduce confidence
+  if (tempSpread != null && tempSpread > 0) {{
+    var penalty = Math.min(15, Math.round(tempSpread * 1.2));
+    base = Math.max(15, base - penalty);
+  }}
+
+  // Label
+  var label, color;
+  if (base >= 85) {{ label = 'High'; color = '#15803d'; }}
+  else if (base >= 65) {{ label = 'Good'; color = '#65a30d'; }}
+  else if (base >= 45) {{ label = 'Moderate'; color = '#ca8a04'; }}
+  else if (base >= 30) {{ label = 'Low'; color = '#dc2626'; }}
+  else {{ label = 'Very Low'; color = '#991b1b'; }}
+
+  return {{ score: base, label: label, color: color, daysOut: daysOut }};
+}}
 
 function buildPanel(dayInfo, forecast) {{
   const panel = document.createElement("div");
@@ -1908,8 +1950,16 @@ function buildPanel(dayInfo, forecast) {{
 
   html += `</div>`;
 
-  // Forecast source attribution
-  html += `<div style="margin-top:8px;font-size:0.72em;color:#999;text-align:right;">Forecast: GFS + ECMWF blend via <a href=\"https://open-meteo.com\" target=\"_blank\" style=\"color:#999;\">Open-Meteo</a> · Updates on page load</div>`;
+  // Forecast confidence + source attribution
+  var conf = getConfidence(dateStr, forecast.tempSpread || null);
+  html += `<div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:0.75em;color:#999;">`;
+  html += `<div style="display:flex;align-items:center;gap:6px;">`;
+  html += `<span style="font-weight:600;color:${{conf.color}};">`;
+  html += `${{conf.score}}% confidence</span>`;
+  html += `<span style="color:#bbb;">· ${{conf.label}} (${{conf.daysOut}}d out)</span>`;
+  html += `</div>`;
+  html += `<div>GFS + ECMWF blend via <a href=\"https://open-meteo.com\" target=\"_blank\" style=\"color:#999;\">Open-Meteo</a></div>`;
+  html += `</div>`;
 
   panel.innerHTML = html;
   return panel;
