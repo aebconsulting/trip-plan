@@ -4662,5 +4662,28 @@ setTimeout(async function() {
 });
 </script>
 
+
+<script>
+// Open all external links in new tab
+function openExternalLinksInNewTab(root) {
+  root.querySelectorAll('a[href]').forEach(function(a) {
+    var href = a.getAttribute('href');
+    if (href && !href.startsWith('#')) {
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener noreferrer');
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', function() {
+  openExternalLinksInNewTab(document);
+  new MutationObserver(function(mutations) {
+    mutations.forEach(function(m) {
+      m.addedNodes.forEach(function(node) {
+        if (node.nodeType === 1) openExternalLinksInNewTab(node);
+      });
+    });
+  }).observe(document.body, { childList: true, subtree: true });
+});
+</script>
 </body>
 </html>
