@@ -4017,18 +4017,99 @@ async function fetchWeather(lat, lon) {
   if (weatherCache[key]) return weatherCache[key];
 
   try {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,weather_code&hourly=precipitation_probability&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=16&timezone=auto`;
+    // Single API call with both models - avoids rate limiting
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,weather_code&hourly=precipitation_probability&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=16&timezone=auto&models=best_match,ecmwf_ifs025`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Open-Meteo error: ${res.status}`);
     const data = await res.json();
-    weatherCache[key] = { daily: data.daily, hourly: data.hourly || null };
+    const d = data.daily;
+
+    // Blend both models from the single response
+    const blended = blendModels(d);
+    // Normalize hourly fields (multi-model adds _best_match suffix)
+    let hourly = data.hourly || null;
+    if (hourly && !hourly.precipitation_probability && hourly.precipitation_probability_best_match) {
+      hourly = { time: hourly.time, precipitation_probability: hourly.precipitation_probability_best_match };
+    }
+    weatherCache[key] = { daily: blended, hourly: hourly };
     return weatherCache[key];
   } catch (err) {
-    console.warn(`Weather fetch failed for ${lat},${lon}:`, err);
-    return null;
+    // Fallback: try single default model if multi-model fails
+    try {
+      const fallbackUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,weather_code&hourly=precipitation_probability&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=16&timezone=auto`;
+      const res2 = await fetch(fallbackUrl);
+      if (!res2.ok) throw new Error(`Fallback error: ${res2.status}`);
+      const data2 = await res2.json();
+      weatherCache[key] = { daily: data2.daily, hourly: data2.hourly || null };
+      return weatherCache[key];
+    } catch (err2) {
+      console.warn(`Weather fetch failed for ${lat},${lon}:`, err2);
+      return null;
+    }
   }
 }
 
+function blendModels(d) {
+  // When both models are in one response, fields are suffixed:
+  // _best_match and _ecmwf_ifs025
+  const hasBM = d.temperature_2m_max_best_match != null;
+  const hasEC = d.temperature_2m_max_ecmwf_ifs025 != null;
+
+  // If only one model returned, use standard field names
+  if (!hasBM && !hasEC) {
+    return d;
+  }
+
+  const result = {
+    time: d.time,
+    temperature_2m_max: [],
+    temperature_2m_min: [],
+    precipitation_probability_max: [],
+    wind_speed_10m_max: [],
+    weather_code: []
+  };
+
+  for (let i = 0; i < d.time.length; i++) {
+    const bmHigh = hasBM ? d.temperature_2m_max_best_match[i] : null;
+    const bmLow = hasBM ? d.temperature_2m_min_best_match[i] : null;
+    const bmPrecip = hasBM ? d.precipitation_probability_max_best_match[i] : null;
+    const bmWind = hasBM ? d.wind_speed_10m_max_best_match[i] : null;
+    const bmCode = hasBM ? d.weather_code_best_match[i] : null;
+
+    const ecHigh = hasEC ? d.temperature_2m_max_ecmwf_ifs025[i] : null;
+    const ecLow = hasEC ? d.temperature_2m_min_ecmwf_ifs025[i] : null;
+    const ecPrecip = hasEC ? d.precipitation_probability_max_ecmwf_ifs025[i] : null;
+    const ecWind = hasEC ? d.wind_speed_10m_max_ecmwf_ifs025[i] : null;
+
+    if (bmHigh != null && ecHigh != null) {
+      result.temperature_2m_max.push((bmHigh + ecHigh) / 2);
+      result.temperature_2m_min.push((bmLow + ecLow) / 2);
+      result.precipitation_probability_max.push(Math.max(bmPrecip || 0, ecPrecip || 0));
+      result.wind_speed_10m_max.push((bmWind + ecWind) / 2);
+      result.weather_code.push(bmCode != null ? bmCode : ecHigh);
+    } else if (bmHigh != null) {
+      result.temperature_2m_max.push(bmHigh);
+      result.temperature_2m_min.push(bmLow);
+      result.precipitation_probability_max.push(bmPrecip);
+      result.wind_speed_10m_max.push(bmWind);
+      result.weather_code.push(bmCode);
+    } else if (ecHigh != null) {
+      result.temperature_2m_max.push(ecHigh);
+      result.temperature_2m_min.push(ecLow);
+      result.precipitation_probability_max.push(ecPrecip);
+      result.wind_speed_10m_max.push(ecWind);
+      result.weather_code.push(d.weather_code_ecmwf_ifs025 ? d.weather_code_ecmwf_ifs025[i] : 2);
+    } else {
+      result.temperature_2m_max.push(null);
+      result.temperature_2m_min.push(null);
+      result.precipitation_probability_max.push(null);
+      result.wind_speed_10m_max.push(null);
+      result.weather_code.push(null);
+    }
+  }
+
+  return result;
+}
 function findForecast(daily, dateStr) {
   if (!daily || !daily.time) return { day: null, night: null };
   const idx = daily.time.indexOf(dateStr);
@@ -4206,6 +4287,9 @@ function buildPanel(dayInfo, forecast) {
   }
 
   html += `</div>`;
+
+  // Forecast source attribution
+  html += `<div style="margin-top:8px;font-size:0.72em;color:#999;text-align:right;">Forecast: GFS + ECMWF blend via <a href="https://open-meteo.com" target="_blank" style="color:#999;">Open-Meteo</a> · Updates on page load</div>`;
 
   panel.innerHTML = html;
   return panel;
