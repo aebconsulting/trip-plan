@@ -4309,6 +4309,13 @@ function buildPanel(dayInfo, forecast) {
       html += `<div style="font-size:0.9em;color:#555;margin-bottom:10px;">🌬️ Wind: ${windDay || windNight} ${windDir}</div>`;
     }
 
+    // Forecast confidence
+    var conf = getConfidence(dateStr, forecast.tempSpread || null);
+    html += `<div style="font-size:0.82em;margin-bottom:10px;padding:6px 10px;background:rgba(0,0,0,0.03);border-radius:8px;display:inline-block;">`;
+    html += `<span style="font-weight:600;color:${conf.color};">${conf.score}% confidence</span>`;
+    html += ` <span style="color:#999;">· ${conf.label} (${conf.daysOut}d out)</span>`;
+    html += `</div>`;
+
     // Clothing strip
     const highNum = typeof high === "number" ? high : 60;
     const lowNum = typeof low === "number" ? low : 40;
