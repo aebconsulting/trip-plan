@@ -288,6 +288,43 @@ html_doc = f"""<!DOCTYPE html>
     from {{ opacity: 0; transform: translateY(-6px) scale(0.97); }}
     to {{ opacity: 1; transform: translateY(0) scale(1); }}
   }}
+
+  .countdown-badge {{
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 20px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 50px;
+    color: var(--cream);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85em;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    animation: pulse-glow 3s ease-in-out infinite;
+  }}
+  .countdown-badge .count-num {{
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1.15em;
+    color: #fbbf24;
+  }}
+  .countdown-badge.trip-active {{
+    background: rgba(34,197,94,0.25);
+    border-color: rgba(34,197,94,0.4);
+  }}
+  .countdown-badge.trip-active .count-num {{
+    color: #4ade80;
+  }}
+  .countdown-badge.trip-over {{
+    opacity: 0.6;
+  }}
+  @keyframes pulse-glow {{
+    0%, 100% {{ box-shadow: 0 0 8px rgba(251,191,36,0.15); }}
+    50% {{ box-shadow: 0 0 16px rgba(251,191,36,0.3); }}
+  }}
+
   .menu-panel-header {{
     display: flex;
     align-items: center;
@@ -1108,6 +1145,7 @@ html_doc = f"""<!DOCTYPE html>
     March 11&ndash;22, 2026
   </div>
   <span class="route-badge">~2,250 mi &bull; Family of 3 &bull; Toyota Crown</span>
+  <div class="countdown-badge" id="trip-countdown"></div>
 </div>
 
 {html_body}
@@ -2266,6 +2304,42 @@ document.addEventListener('DOMContentLoaded', function() {{
     }});
   }}).observe(document.body, {{ childList: true, subtree: true }});
 }});
+</script>
+
+<script>
+// Trip countdown
+(function() {{
+  var tripStart = new Date('2026-03-11T00:00:00');
+  var tripEnd = new Date('2026-03-22T23:59:59');
+  var el = document.getElementById('trip-countdown');
+  if (!el) return;
+
+  function update() {{
+    var now = new Date();
+    if (now < tripStart) {{
+      var diff = tripStart - now;
+      var days = Math.floor(diff / 86400000);
+      var hours = Math.floor((diff % 86400000) / 3600000);
+      if (days === 0) {{
+        el.innerHTML = 'Trip starts in <span class="count-num">' + hours + '</span> hour' + (hours !== 1 ? 's' : '') + '!';
+      }} else if (days === 1) {{
+        el.innerHTML = '<span class="count-num">Tomorrow!</span> Trip starts in <span class="count-num">1</span> day';
+      }} else {{
+        el.innerHTML = '<span class="count-num">' + days + '</span> day' + (days !== 1 ? 's' : '') + ' until adventure begins';
+      }}
+    }} else if (now <= tripEnd) {{
+      var dayNum = Math.floor((now - tripStart) / 86400000) + 1;
+      var daysLeft = 12 - dayNum;
+      el.className = 'countdown-badge trip-active';
+      el.innerHTML = '🚗 Day <span class="count-num">' + dayNum + '</span> of 12 — ' + (daysLeft > 0 ? daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' remaining' : 'Final day!');
+    }} else {{
+      el.className = 'countdown-badge trip-over';
+      el.innerHTML = 'Trip complete \u2014 what an adventure!';
+    }}
+  }}
+  update();
+  setInterval(update, 60000);
+}})();
 </script>
 </body>
 </html>
