@@ -440,13 +440,23 @@
   .day-header {
     background: linear-gradient(135deg, var(--forest) 0%, var(--forest-mid) 100%);
     color: var(--cream);
-    padding: 18px 26px;
+    padding: 18px 26px 14px;
     display: flex;
     align-items: center;
     gap: 16px;
     flex-wrap: wrap;
     position: relative;
     overflow: hidden;
+  }
+  .day-theme {
+    width: 100%;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.82em;
+    font-weight: 400;
+    opacity: 0.7;
+    font-style: italic;
+    margin-top: -4px;
+    letter-spacing: 0.02em;
   }
   .day-header::after {
     content: '';
@@ -3679,6 +3689,14 @@ document.addEventListener('DOMContentLoaded', function() {
       headerHtml += '<span class="day-date">' + dateText + '</span>';
     }
     headerHtml += '<span class="day-title">' + titleText + '</span>';
+
+    // Check if next sibling is a theme tagline <p>
+    var themeSib = h2.nextElementSibling;
+    if (themeSib && themeSib.tagName === 'P' && themeSib.style.fontStyle === 'italic' && themeSib.textContent.includes('—')) {
+      headerHtml += '<span class="day-theme">' + themeSib.textContent + '</span>';
+      themeSib.remove();
+    }
+
     header.innerHTML = headerHtml;
 
     const body = document.createElement('div');
