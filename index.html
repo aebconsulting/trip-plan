@@ -4056,7 +4056,7 @@ async function fetchWeather(lat, lon) {
 
   try {
     // Single API call with both models - avoids rate limiting
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,weather_code&hourly=precipitation_probability&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=16&timezone=auto&models=best_match,ecmwf_ifs025`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,weather_code&hourly=precipitation_probability,temperature_2m&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=16&timezone=auto&models=best_match,ecmwf_ifs025`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Open-Meteo error: ${res.status}`);
     const data = await res.json();
@@ -4067,14 +4067,20 @@ async function fetchWeather(lat, lon) {
     // Normalize hourly fields (multi-model adds _best_match suffix)
     let hourly = data.hourly || null;
     if (hourly && !hourly.precipitation_probability && hourly.precipitation_probability_best_match) {
-      hourly = { time: hourly.time, precipitation_probability: hourly.precipitation_probability_best_match };
+      hourly = {
+        time: hourly.time,
+        precipitation_probability: hourly.precipitation_probability_best_match,
+        temperature_2m: hourly.temperature_2m_best_match || hourly.temperature_2m || []
+      };
+    } else if (hourly) {
+      hourly.temperature_2m = hourly.temperature_2m_best_match || hourly.temperature_2m || [];
     }
     weatherCache[key] = { daily: blended, hourly: hourly };
     return weatherCache[key];
   } catch (err) {
     // Fallback: try single default model if multi-model fails
     try {
-      const fallbackUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,weather_code&hourly=precipitation_probability&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=16&timezone=auto`;
+      const fallbackUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,weather_code&hourly=precipitation_probability,temperature_2m&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=16&timezone=auto`;
       const res2 = await fetch(fallbackUrl);
       if (!res2.ok) throw new Error(`Fallback error: ${res2.status}`);
       const data2 = await res2.json();
@@ -4179,10 +4185,15 @@ function extractHourlyPrecip(weatherData, dateStr) {
   if (!weatherData || !weatherData.hourly || !weatherData.hourly.time) return null;
   const hourly = weatherData.hourly;
   const hours = [];
+  const temps = hourly.temperature_2m || [];
   for (let i = 0; i < hourly.time.length; i++) {
     if (hourly.time[i].startsWith(dateStr)) {
       const hr = parseInt(hourly.time[i].substring(11, 13), 10);
-      hours.push({ hour: hr, precip: hourly.precipitation_probability[i] || 0 });
+      hours.push({
+        hour: hr,
+        precip: hourly.precipitation_probability[i] || 0,
+        temp: temps[i] != null ? Math.round(temps[i]) : null
+      });
     }
   }
   return hours.length > 0 ? hours : null;
@@ -4280,23 +4291,31 @@ function buildPanel(dayInfo, forecast) {
 
     const icon = conditionIcon(forecastText);
 
-    html += `<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">`;
-    html += `<span style="font-size:2.2em;">${icon}</span>`;
+    html += `<div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;">`;
+    html += `<span style="font-size:2.4em;">${icon}</span>`;
     html += `<div>`;
-    html += `<div style="font-size:1.3em;font-weight:600;">${high}°F / ${low}°F</div>`;
-    html += `<div style="color:#555;">${forecastText}</div>`;
+    html += `<div style="display:flex;align-items:baseline;gap:8px;">`;
+    html += `<span style="font-size:1.6em;font-weight:700;color:#1B4332;">${high}°</span>`;
+    html += `<span style="font-size:0.95em;color:#888;">/ ${low}°F</span>`;
+    html += `</div>`;
+    html += `<div style="color:#555;font-size:0.95em;">${forecastText}</div>`;
     html += `</div></div>`;
 
     if (forecast.hourlyPrecip && forecast.hourlyPrecip.length > 0) {
-      html += `<div style="margin-bottom:8px;">`;
-      html += `<div style="font-size:0.85em;font-weight:600;color:#1B4332;margin-bottom:4px;">💧 Precipitation Chance by Hour</div>`;
-      html += `<div style="display:flex;flex-wrap:wrap;gap:6px 12px;font-size:0.82em;color:#555;">`;
+      html += `<div style="margin-bottom:10px;">`;
+      html += `<div style="font-size:0.85em;font-weight:600;color:#1B4332;margin-bottom:6px;">🌡️ Hourly Forecast</div>`;
+      html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:4px 8px;font-size:0.82em;">`;
       for (const h of forecast.hourlyPrecip) {
         if (h.hour % 3 === 0) {
-          const labelStr = h.hour === 0 ? "12 AM" : h.hour < 12 ? h.hour + " AM" : h.hour === 12 ? "12 PM" : (h.hour - 12) + " PM";
-          const color = h.precip > 60 ? "#2563eb" : h.precip > 30 ? "#1B4332" : "#555";
-          const weight = h.precip > 30 ? "600" : "400";
-          html += `<span style="color:${color};font-weight:${weight};">${labelStr}: ${h.precip}%</span>`;
+          const labelStr = h.hour === 0 ? "12a" : h.hour < 12 ? h.hour + "a" : h.hour === 12 ? "12p" : (h.hour - 12) + "p";
+          const precipColor = h.precip > 60 ? "#2563eb" : h.precip > 30 ? "#1B4332" : "#999";
+          const precipWeight = h.precip > 30 ? "600" : "400";
+          const tempStr = h.temp != null ? h.temp + "°" : "";
+          html += `<div style="display:flex;align-items:center;gap:4px;padding:2px 0;">`;
+          html += `<span style="font-weight:600;color:#1B4332;min-width:28px;">${labelStr}</span>`;
+          if (tempStr) html += `<span style="font-weight:500;color:#333;min-width:28px;">${tempStr}</span>`;
+          html += `<span style="color:${precipColor};font-weight:${precipWeight};">💧${h.precip}%</span>`;
+          html += `</div>`;
         }
       }
       html += `</div>`;
