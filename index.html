@@ -4311,11 +4311,12 @@ function buildPanel(dayInfo, forecast) {
       for (const h of forecast.hourlyPrecip) {
         if (h.hour % 3 === 0) {
           const labelStr = h.hour === 0 ? "12a" : h.hour < 12 ? h.hour + "a" : h.hour === 12 ? "12p" : (h.hour - 12) + "p";
-          const precipColor = h.precip > 60 ? "#2563eb" : h.precip > 30 ? "#1B4332" : "#aaa";
+          const precipColor = h.precip > 60 ? "#2563eb" : h.precip > 40 ? "#1B4332" : "#aaa";
+          const precipWeight = h.precip > 40 ? "700" : "400";
           const tempStr = h.temp != null ? h.temp + "°" : "";
           html += `<div style="display:flex;flex-direction:column;align-items:center;min-width:48px;padding:4px 6px;border-right:1px solid #d4edda;">`;
           html += `<span style="font-weight:600;color:#333;font-size:1.05em;">${tempStr}</span>`;
-          html += `<span style="color:${precipColor};font-size:0.85em;margin:1px 0;">💧${h.precip}%</span>`;
+          html += `<span style="color:${precipColor};font-weight:${precipWeight};font-size:0.85em;margin:1px 0;">💧${h.precip}%</span>`;
           html += `<span style="font-weight:600;color:#1B4332;font-size:0.9em;">${labelStr}</span>`;
           html += `</div>`;
         }
