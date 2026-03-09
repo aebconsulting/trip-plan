@@ -3855,6 +3855,9 @@ function getClothingItems(high, low, forecast, windSpeed, dayNum) {
     items.push({ icon: CLOTHING_ICONS.shorts, label: "Shorts" });
     items.push({ icon: CLOTHING_ICONS.sunHat, label: "Sun Hat" });
     items.push({ icon: CLOTHING_ICONS.sunscreen, label: "Sunscreen" });
+  } else if (high >= 67) {
+    items.push({ icon: CLOTHING_ICONS.tshirt, label: "T-Shirt" });
+    items.push({ icon: CLOTHING_ICONS.shorts, label: "Shorts" });
   } else {
     items.push({ icon: CLOTHING_ICONS.tshirt, label: "T-Shirt" });
     items.push({ icon: CLOTHING_ICONS.longPants, label: "Long Pants" });
